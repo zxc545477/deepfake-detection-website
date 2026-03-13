@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVerify · login / sign up</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font + Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        body {
+            background-color: #0a0a0f;
+            color: white;
+        }
+
+        .text-primary {
+            color: #00e9fa;
+        }
+        .bg-primary {
+            background-color: #00e9fa;
+        }
+        .border-primary {
+            border-color: #00e9fa;
+        }
+        .glass-panel {
+            background: rgba(20, 25, 35, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 233, 250, 0.15);
+        }
+
+        /* animations */
+        @keyframes float-bg {
+            0% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-20px) translateX(10px); }
+            100% { transform: translateY(0px) translateX(0px); }
+        }
+        .animate-float-bg {
+            animation: float-bg 18s infinite ease-in-out;
+        }
+
+        @keyframes glow-pulse {
+            0%,100% { box-shadow: 0 0 20px rgba(0,233,250,0.2); }
+            50% { box-shadow: 0 0 60px rgba(0,233,250,0.6); }
+        }
+        .glow-pulse {
+            animation: glow-pulse 3s infinite;
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 25px rgba(0,233,250,0.5);
+            transition: box-shadow 0.3s;
+        }
+
+        /* neural grid background */
+        .neural-bg {
+            background-image: 
+                linear-gradient(rgba(0,233,250,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,233,250,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .tab-active {
+            background: rgba(0, 233, 250, 0.15);
+            color: #00e9fa;
+            border-color: #00e9fa;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center neural-bg relative overflow-x-hidden">
+
+    <!-- floating neural orbs (background decoration) -->
+    <div class="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl animate-float-bg"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-primary/10 blur-3xl animate-float-bg" style="animation-delay: -5s;"></div>
+
+    <!-- main login/signup card -->
+    <div class="relative z-10 w-full max-w-md px-4 py-8">
+
+        <!-- logo / brand -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-primary">DEEP<span class="text-white">VERIFY</span></h1>
+            <p class="text-slate-400 text-sm mt-2">neural deepfake detection · secure access</p>
+        </div>
+
+        <!-- glass card -->
+        <div class="glass-panel rounded-3xl border border-primary/20 p-8 glow-pulse">
+
+            <!-- tab switcher: login / signup -->
+            <div class="flex gap-2 p-1 bg-black/40 rounded-2xl border border-primary/20 mb-8">
+                <button id="loginTabBtn" class="tab-btn flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-active">login</button>
+                <button id="signupTabBtn" class="tab-btn flex-1 py-3 rounded-xl text-sm font-bold transition-all text-slate-400">sign up</button>
+            </div>
+
+            <!-- ========== LOGIN FORM ========== -->
+            <div id="loginForm" class="form-panel block">
+                <form id="loginFormElement" onsubmit="event.preventDefault(); handleLogin();">
+                    <div class="space-y-5">
+                        <!-- email -->
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">email</label>
+                            <div class="flex items-center gap-3 bg-black/30 border border-primary/20 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+                                <span class="material-symbols-outlined text-primary text-sm">mail</span>
+                                <input type="email" id="loginEmail" placeholder="e.g. elena@deepverify.ai" class="w-full bg-transparent outline-none text-sm text-white placeholder:text-slate-600" required>
+                            </div>
+                        </div>
+                        <!-- password -->
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">password</label>
+                            <div class="flex items-center gap-3 bg-black/30 border border-primary/20 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+                                <span class="material-symbols-outlined text-primary text-sm">lock</span>
+                                <input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-transparent outline-none text-sm text-white placeholder:text-slate-600" required>
+                            </div>
+                        </div>
+
+                        <!-- remember & forgot -->
+                        <div class="flex items-center justify-between text-xs">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="accent-primary bg-black/30 border-primary/30 rounded">
+                                <span class="text-slate-300">remember session</span>
+                            </label>
+                            <a href="#" class="text-primary hover:underline">forgot?</a>
+                        </div>
+
+                        <!-- login button (simulates redirect to verification page) -->
+                        <button type="button" onclick="goToUpload()" 
+class="w-full bg-primary text-black py-4 rounded-xl font-bold text-base tracking-wide hover:scale-[1.02] transition-all hover-glow flex items-center justify-center gap-2 mt-8">
+    <span class="material-symbols-outlined">login</span> Start Verification
+</button>
+                    </div>
+                </form>
+
+                <!-- alternative (demo note) -->
+                <p class="text-center text-xs text-slate-500 mt-6">demo: any credentials work</p>
+            </div>
+
+            <!-- ========== SIGNUP FORM ========== -->
+            <div id="signupForm" class="form-panel hidden">
+                <form id="signupFormElement" onsubmit="event.preventDefault(); handleSignup();">
+                    <div class="space-y-5">
+                        <!-- full name -->
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">full name</label>
+                            <div class="flex items-center gap-3 bg-black/30 border border-primary/20 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+                                <span class="material-symbols-outlined text-primary text-sm">badge</span>
+                                <input type="text" id="signupName" placeholder="Dr. Elena K." class="w-full bg-transparent outline-none text-sm text-white placeholder:text-slate-600" required>
+                            </div>
+                        </div>
+                        <!-- email -->
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">email</label>
+                            <div class="flex items-center gap-3 bg-black/30 border border-primary/20 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+                                <span class="material-symbols-outlined text-primary text-sm">mail</span>
+                                <input type="email" id="signupEmail" placeholder="contact@deepverify.ai" class="w-full bg-transparent outline-none text-sm text-white placeholder:text-slate-600" required>
+                            </div>
+                        </div>
+                        <!-- password -->
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">password</label>
+                            <div class="flex items-center gap-3 bg-black/30 border border-primary/20 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+                                <span class="material-symbols-outlined text-primary text-sm">lock</span>
+                                <input type="password" id="signupPassword" placeholder="min. 8 characters" class="w-full bg-transparent outline-none text-sm text-white placeholder:text-slate-600" required>
+                            </div>
+                        </div>
+                        <!-- confirm password (simple) -->
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider block mb-2">confirm password</label>
+                            <div class="flex items-center gap-3 bg-black/30 border border-primary/20 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+                                <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                                <input type="password" id="signupConfirm" placeholder="••••••••" class="w-full bg-transparent outline-none text-sm text-white placeholder:text-slate-600" required>
+                            </div>
+                        </div>
+
+                        <!-- terms -->
+                        <div class="flex items-center gap-2 text-xs">
+                            <input type="checkbox" class="accent-primary" required>
+                            <span class="text-slate-300">i agree to the <a href="#" class="text-primary hover:underline">terms</a> and <a href="#" class="text-primary hover:underline">privacy policy</a></span>
+                        </div>
+
+                        <!-- signup button (simulates registration + redirect) -->
+                        <button type="button" onclick="goToUpload()" 
+class="w-full bg-primary text-black py-4 rounded-xl font-bold text-base tracking-wide hover:scale-[1.02] transition-all hover-glow flex items-center justify-center gap-2 mt-8">
+    <span class="material-symbols-outlined">person_add</span> Create Account & Verify
+</button>
+                    </div>
+                </form>
+
+                <p class="text-center text-xs text-slate-500 mt-6">already registered? <button id="switchToLogin" class="text-primary hover:underline bg-transparent">login</button></p>
+            </div>
+
+            <!-- additional auth options (just for style) -->
+            <div class="mt-8 flex items-center gap-4">
+                <div class="h-px flex-1 bg-primary/20"></div>
+                <span class="text-xs text-slate-500">or continue with</span>
+                <div class="h-px flex-1 bg-primary/20"></div>
+            </div>
+            <div class="flex justify-center gap-4 mt-6">
+                <button class="bg-black/40 border border-primary/20 p-3 rounded-xl hover:bg-primary/10 transition-all">
+                    <span class="material-symbols-outlined text-primary">g_mobiledata</span>
+                </button>
+                <button class="bg-black/40 border border-primary/20 p-3 rounded-xl hover:bg-primary/10 transition-all">
+                    <span class="material-symbols-outlined text-primary">apple</span>
+                </button>
+                <button class="bg-black/40 border border-primary/20 p-3 rounded-xl hover:bg-primary/10 transition-all">
+                    <span class="material-symbols-outlined text-primary">fingerprint</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- footer note -->
+        <p class="text-center text-xs text-slate-600 mt-8">© 2026 DeepVerify · secure neural gateway</p>
+    </div>
+
+    <script>
+        // Tab switching between login and signup
+        const loginTab = document.getElementById('loginTabBtn');
+        const signupTab = document.getElementById('signupTabBtn');
+        const loginFormDiv = document.getElementById('loginForm');
+        const signupFormDiv = document.getElementById('signupForm');
+        const switchToLoginBtn = document.getElementById('switchToLogin');
+
+        function setActiveTab(tab) {
+            // reset both tabs
+            loginTab.classList.remove('tab-active', 'text-primary');
+            signupTab.classList.remove('tab-active', 'text-primary');
+            loginTab.classList.add('text-slate-400');
+            signupTab.classList.add('text-slate-400');
+
+            if (tab === 'login') {
+                loginTab.classList.add('tab-active', 'text-primary');
+                loginTab.classList.remove('text-slate-400');
+                loginFormDiv.classList.remove('hidden');
+                signupFormDiv.classList.add('hidden');
+            } else {
+                signupTab.classList.add('tab-active', 'text-primary');
+                signupTab.classList.remove('text-slate-400');
+                signupFormDiv.classList.remove('hidden');
+                loginFormDiv.classList.add('hidden');
+            }
+        }
+
+        loginTab.addEventListener('click', () => setActiveTab('login'));
+        signupTab.addEventListener('click', () => setActiveTab('signup'));
+
+        if (switchToLoginBtn) {
+            switchToLoginBtn.addEventListener('click', () => setActiveTab('login'));
+        }
+
+        // simulate login action -> redirect to "scanning / verification" page
+        function handleLogin() {
+            // simple validation dummy (just for demo)
+            const email = document.getElementById('loginEmail')?.value;
+            const pwd = document.getElementById('loginPassword')?.value;
+            if (!email || !pwd) {
+                alert('please fill in both fields (demo: any credentials work)');
+                return;
+            }
+            // redirect to the scanning page (we'll open in same window)
+            window.location.href = 'scanning.html'; // assuming scanning page exists, but for demo we can show alert + fake redirect
+            // if you want to simulate, we can show message and replace content (but we'll redirect to a placeholder)
+            // For this demo, we'll use a fallback: since scanning page might not exist, we show alert and then simulate.
+            alert('login successful! redirecting to neural scan hub... (demo)');
+            // optional: replace page with a simple message or open the scanning code (we could embed an iframe but better to just pretend)
+            // In context of this task we output a separate scanning page. We can simulate by opening a new page.
+            // For now we do a window.location to a relative 'scanning.html' – if not present, we display message.
+            // To keep it self-contained, we'll redirect to a generated scanning page using a data URI? better show alert.
+            // We'll just display a success message and change body text (simple demo).
+            document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center text-primary text-xl">✅ redirecting to deepfake scanner ... (login mock)</div>`;
+            setTimeout(() => { window.location.href = 'about:blank'; }, 1500); // just for fun, avoid.
+        }
+
+        function handleSignup() {
+            const name = document.getElementById('signupName')?.value;
+            const email = document.getElementById('signupEmail')?.value;
+            const pwd = document.getElementById('signupPassword')?.value;
+            const confirm = document.getElementById('signupConfirm')?.value;
+            if (!name || !email || !pwd || !confirm) {
+                alert('please fill all fields');
+                return;
+            }
+            if (pwd !== confirm) {
+                alert('passwords do not match');
+                return;
+            }
+            alert('account created! redirecting to verification... (demo)');
+            // similar redirect simulation
+            document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center text-primary text-xl">✅ account created · redirecting to neural scan ...</div>`;
+        }
+
+        // make functions global for onclick
+        window.handleLogin = handleLogin;
+        window.handleSignup = handleSignup;
+    
+        function goToUpload() {
+        window.location.href = "upload.html";
+        }
+
+    </script>
+</body>
+</html>

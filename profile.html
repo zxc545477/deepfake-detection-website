@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVerify · profile & settings</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font + Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        body {
+            background-color: #0a0a0f;
+            color: white;
+        }
+
+        .text-primary {
+            color: #00e9fa;
+        }
+        .bg-primary {
+            background-color: #00e9fa;
+        }
+        .border-primary {
+            border-color: #00e9fa;
+        }
+        .glass-panel {
+            background: rgba(20, 25, 35, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 233, 250, 0.15);
+        }
+
+        /* animations */
+        @keyframes pulse-subtle {
+            0%,100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        .pulse-subtle {
+            animation: pulse-subtle 2s infinite;
+        }
+
+        @keyframes glow-soft {
+            0%,100% { box-shadow: 0 0 10px rgba(0,233,250,0.2); }
+            50% { box-shadow: 0 0 25px rgba(0,233,250,0.5); }
+        }
+        .glow-soft {
+            animation: glow-soft 3s infinite;
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 20px rgba(0,233,250,0.4);
+            transition: box-shadow 0.3s;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #2a2f3a;
+            transition: 0.2s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #00e9fa;
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #00e9fa30;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- ========== NAVBAR ========== -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-black/70 backdrop-blur-lg border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-20 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-primary">DEEP<span class="text-white">VERIFY</span></h1>
+        <div class="flex gap-8 text-sm font-medium">
+            <a href="#" class="hover:text-primary transition">Home</a>
+            <a href="#" class="hover:text-primary transition">Scan</a>
+            <a href="#" class="text-primary border-b-2 border-primary pb-1">Profile</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== MAIN PROFILE & SETTINGS SECTION ========== -->
+<section class="flex-1 flex items-start justify-center px-4 pt-32 pb-20">
+    <div class="max-w-6xl w-full">
+
+        <!-- header with user greeting -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-10">
+            <div>
+                <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary border border-primary/30 bg-primary/10 px-4 py-2 rounded-full">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    account · enterprise tier
+                </span>
+                <h2 class="text-3xl lg:text-4xl font-bold mt-4">Profile & <span class="text-primary">settings</span></h2>
+            </div>
+            <div class="glass-panel px-6 py-3 rounded-2xl flex items-center gap-4 border border-primary/20">
+                <span class="material-symbols-outlined text-primary">verified</span>
+                <span class="text-sm font-medium">last active: 2 minutes ago</span>
+            </div>
+        </div>
+
+        <!-- two column layout: left profile card / right settings -->
+        <div class="grid lg:grid-cols-3 gap-6">
+
+            <!-- LEFT CARD: USER PROFILE + STATS -->
+            <div class="lg:col-span-1 space-y-6">
+
+                <!-- profile picture + basic info -->
+                <div class="glass-panel rounded-3xl p-6 border border-primary/20 flex flex-col items-center text-center">
+                    <div class="relative">
+                        <div class="w-28 h-28 rounded-2xl bg-gradient-to-br from-primary to-cyan-400 p-1 glow-soft">
+                            <div class="w-full h-full rounded-xl bg-black/80 flex items-center justify-center overflow-hidden">
+                                <span class="material-symbols-outlined text-6xl text-primary/90">account_circle</span>
+                            </div>
+                        </div>
+                        <span class="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-black rounded-full"></span>
+                    </div>
+                    <h3 class="text-2xl font-bold mt-4">Dr. Elena K.</h3>
+                    <p class="text-slate-400 text-sm">senior forensic analyst · admin</p>
+                    <div class="flex gap-2 mt-4">
+                        <span class="bg-primary/10 border border-primary/30 text-xs px-3 py-1 rounded-full">deepfake specialist</span>
+                        <span class="bg-primary/10 border border-primary/30 text-xs px-3 py-1 rounded-full">neural ops</span>
+                    </div>
+
+                    <!-- quick stats -->
+                    <div class="grid grid-cols-3 gap-3 w-full mt-6 pt-4 border-t border-primary/10">
+                        <div>
+                            <p class="text-xl font-bold text-primary">147</p>
+                            <p class="text-[10px] text-slate-400 uppercase">scans</p>
+                        </div>
+                        <div>
+                            <p class="text-xl font-bold text-primary">99.2%</p>
+                            <p class="text-[10px] text-slate-400 uppercase">accuracy</p>
+                        </div>
+                        <div>
+                            <p class="text-xl font-bold text-primary">3yr</p>
+                            <p class="text-[10px] text-slate-400 uppercase">tenure</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- security status card (mfa / api keys) -->
+                <div class="glass-panel rounded-3xl p-6 border border-primary/20">
+                    <h4 class="font-bold text-sm tracking-wider flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-primary">security</span> security status
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-lg">lock</span>
+                                <span class="text-sm">multi‑factor auth</span>
+                            </div>
+                            <span class="text-xs bg-green-500/20 text-green-300 border border-green-500/30 px-3 py-1 rounded-full">enabled</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-lg">vpn_key</span>
+                                <span class="text-sm">API key</span>
+                            </div>
+                            <span class="text-xs font-mono bg-black/40 px-3 py-1 rounded-full border border-primary/20">dv_live_3f8a...b2</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-lg">devices</span>
+                                <span class="text-sm">active sessions</span>
+                            </div>
+                            <span class="text-xs text-primary">2 devices</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-6 bg-primary/10 border border-primary/30 text-primary py-3 rounded-xl text-sm font-bold hover:bg-primary hover:text-black transition-all hover-glow">
+                        regenerate API key
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT CARD: SETTINGS (2/3 width) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- account settings panel -->
+                <div class="glass-panel rounded-3xl p-6 border border-primary/20">
+                    <h4 class="font-bold text-base tracking-wider flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">manage_accounts</span> account preferences
+                    </h4>
+
+                    <!-- email & display name -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider">email address</label>
+                            <div class="flex items-center gap-2 mt-1 bg-black/30 border border-primary/20 rounded-xl px-4 py-3">
+                                <span class="material-symbols-outlined text-primary text-sm">mail</span>
+                                <span class="text-sm">elena.k@deepverify.ai</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider">display name</label>
+                            <div class="flex items-center gap-2 mt-1 bg-black/30 border border-primary/20 rounded-xl px-4 py-3">
+                                <span class="material-symbols-outlined text-primary text-sm">badge</span>
+                                <span class="text-sm">Dr. Elena K.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- role & timezone -->
+                    <div class="grid md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider">role</label>
+                            <div class="flex items-center gap-2 mt-1 bg-black/30 border border-primary/20 rounded-xl px-4 py-3">
+                                <span class="material-symbols-outlined text-primary text-sm">admin_panel_settings</span>
+                                <span class="text-sm">Administrator</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 uppercase tracking-wider">time zone</label>
+                            <div class="flex items-center gap-2 mt-1 bg-black/30 border border-primary/20 rounded-xl px-4 py-3">
+                                <span class="material-symbols-outlined text-primary text-sm">schedule</span>
+                                <span class="text-sm">UTC+2 (CEST)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- notification settings + toggles -->
+                <div class="glass-panel rounded-3xl p-6 border border-primary/20">
+                    <h4 class="font-bold text-base tracking-wider flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">notifications</span> alerts & notifications
+                    </h4>
+
+                    <div class="space-y-5">
+                        <!-- email alerts -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">email alerts</p>
+                                <p class="text-xs text-slate-400">deepfake scan completion, security issues</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked id="emailToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <!-- push notifications -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">push notifications</p>
+                                <p class="text-xs text-slate-400">browser / desktop alerts</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked id="pushToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <!-- weekly report -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">weekly summary</p>
+                                <p class="text-xs text-slate-400">scan stats and model updates</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="weeklyToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <!-- scan anomalies -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">real‑time anomaly alerts</p>
+                                <p class="text-xs text-slate-400">high‑confidence deepfake detection</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked id="anomalyToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- threat detection sensitivity & other settings -->
+                <div class="glass-panel rounded-3xl p-6 border border-primary/20">
+                    <h4 class="font-bold text-base tracking-wider flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">tune</span> detection engine
+                    </h4>
+
+                    <!-- slider for sensitivity -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium">detection sensitivity</span>
+                            <span class="text-xs text-primary font-bold" id="sensitivityValue">balanced</span>
+                        </div>
+                        <input type="range" min="0" max="2" step="1" value="1" id="sensitivitySlider" class="w-full accent-primary mt-2 cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-500 uppercase mt-1">
+                            <span>low (fewer false positives)</span>
+                            <span>balanced</span>
+                            <span>aggressive</span>
+                        </div>
+                    </div>
+
+                    <!-- model version / update channel -->
+                    <div class="flex items-center justify-between py-3 border-t border-primary/10">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">update</span>
+                            <span class="text-sm">model update channel</span>
+                        </div>
+                        <select class="bg-black/40 border border-primary/30 rounded-lg px-3 py-1 text-sm text-primary">
+                            <option>stable (v2.4)</option>
+                            <option>beta (v2.5-rc)</option>
+                            <option>nightly</option>
+                        </select>
+                    </div>
+
+                    <!-- auto-scan toggle -->
+                    <div class="flex items-center justify-between py-3 border-t border-primary/10">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                            <span class="text-sm">auto‑scan uploaded media</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- danger zone (delete account) -->
+                <div class="glass-panel rounded-3xl p-6 border border-red-500/30 bg-red-950/10">
+                    <h4 class="font-bold text-base tracking-wider flex items-center gap-2 mb-4 text-red-400">
+                        <span class="material-symbols-outlined">warning</span> danger zone
+                    </h4>
+                    <p class="text-xs text-slate-400 mb-4">Permanently delete account and all scan history. This action is irreversible.</p>
+                    <button class="border border-red-500/50 text-red-400 px-6 py-3 rounded-xl text-sm font-bold hover:bg-red-500/20 transition-all">
+                        delete account
+                    </button>
+                </div>
+
+                <!-- save changes button -->
+                <div class="flex justify-end">
+                    <button class="bg-primary text-black px-10 py-4 rounded-xl font-bold text-lg tracking-wide hover:scale-105 transition-all glow-soft flex items-center gap-2">
+                        <span class="material-symbols-outlined">save</span> save changes
+                        
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- tiny footer -->
+<footer class="text-center text-slate-600 text-xs py-6 border-t border-white/5">
+    DeepVerify · secure account management · v2.4.0
+</footer>
+
+<!-- little script for slider demo -->
+<script>
+    const slider = document.getElementById('sensitivitySlider');
+    const sensVal = document.getElementById('sensitivityValue');
+    if (slider) {
+        slider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            if (val === 0) sensVal.textContent = 'low';
+            else if (val === 1) sensVal.textContent = 'balanced';
+            else sensVal.textContent = 'aggressive';
+        });
+    }
+
+    // optional toggle switches visual feedback (they work as checkboxes)
+</script>
+</body>
+</html>

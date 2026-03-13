@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>DeepVerify | Restoring Trust in the Digital Era</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#00e9fa",
+            "background-light": "#fafafa",
+            "background-dark": "#121416",
+            "surface": "#1e2226",
+            "border-accent": "#2e676b"
+          },
+          fontFamily: {
+            "display": ["Space Grotesk", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* custom animations & utilities not covered by tailwind */
+    .glass-morphism {
+      background: rgba(35, 16, 71, 0.05);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .animate-slideDown {
+      animation: slideDown 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes slideDown {
+      0% { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp {
+      opacity: 0;
+      animation: fadeInUp 0.8s cubic-bezier(0.2,0.9,0.3,1) forwards;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-pulse-gpu-accelerated {
+      animation: pulseGpu 2.5s infinite ease-in-out;
+      will-change: transform, opacity;
+    }
+    @keyframes pulseGpu {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.02); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 3s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 0.6; transform: scale(1.3); }
+    }
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #00e9fa, transparent);
+      box-shadow: 0 0 20px #00e9fa;
+      animation: scanMove 4s linear infinite;
+      opacity: 0.7;
+      z-index: 10;
+      pointer-events: none;
+    }
+    @keyframes scanMove {
+      0% { top: 0%; }
+      100% { top: 100%; }
+    }
+    .animate-float {
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-marquee {
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-rotate-slow {
+      animation: rotateSlow 20s linear infinite;
+    }
+    @keyframes rotateSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .group:hover .group-hover\:animate-bounce-subtle {
+      animation: bounceSubtle 0.6s ease infinite;
+    }
+    @keyframes bounceSubtle {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    /* additional utility */
+    .delay-\[1s\] {
+      animation-delay: 1s;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-x-hidden">
+
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-morphism border-b border-white/5 px-6 lg:px-20 py-4 flex items-center justify-between animate-slideDown">
+  <div class="flex items-center gap-3 group">
+    <div class="text-primary transform transition-transform group-hover:scale-110 group-hover:rotate-12 duration-300">
+      <svg fill="none" height="32" viewbox="0 0 48 48" width="32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor"></path>
+      </svg>
+    </div>
+    <span class="text-xl font-bold tracking-tight text-white uppercase italic transition-colors group-hover:text-primary">DeepVerify</span>
+  </div>
+  <div class="hidden md:flex items-center gap-10">
+    <a class="text-sm font-medium hover:text-primary transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full" href="#">upload media</a>
+    <a class="text-sm font-medium hover:text-primary transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full" href="#">dashboard</a>
+    <a class="text-sm font-medium hover:text-primary transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full" href="#">report</a>
+    <a class="text-sm font-medium hover:text-primary transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full" href="#">profile</a>
+  </div>
+  <a href="login.html">
+  <button class="bg-primary hover:brightness-110 text-background-dark px-6 py-2 rounded font-bold text-sm tracking-wide transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_rgba(0,233,250,0.6)] animate-pulse-gpu-accelerated"> sign up </button>
+</a>
+</nav>
+
+<main class="pt-24">
+
+  <!-- HeroSection -->
+  <section class="max-w-7xl mx-auto px-6 lg:px-20 py-16 lg:py-28 flex flex-col lg:flex-row items-center gap-16">
+    <div class="flex-1 space-y-8">
+      <div class="inline-block px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase animate-fadeInUp"> Version 4.2 Neural Core Live </div>
+      <h1 class="text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tighter italic animate-fadeInUp delay-1"> Restoring <span class="text-primary not-italic relative group"> Trust <span class="absolute -inset-1 bg-primary/20 blur-lg group-hover:blur-xl transition-all duration-500 opacity-0 group-hover:opacity-100"></span> </span> in the Digital Era </h1>
+      <p class="text-slate-400 text-lg max-w-xl leading-relaxed animate-fadeInUp delay-2"> State-of-the-art neural scanning to identify synthetic media in milliseconds. Protect your brand with enterprise-grade deepfake detection and biometric verification. </p>
+      <div class="flex flex-wrap gap-4 pt-4 animate-fadeInUp delay-3">
+        <a href="login.html">
+  
+          <button class="bg-primary text-background-dark px-8 py-4 rounded-lg font-bold text-base transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_rgba(0,233,250,0.6)] relative overflow-hidden group">
+    <span class="relative z-10">Login To Start</span>
+  </button>
+
+  </button>
+</a>
+        <button id="watchDemoBtn" class="bg-white/5 border border-white/10 px-8 py-4 rounded-lg font-bold text-base hover:bg-white/10 transition-all duration-300 flex items-center gap-2 hover:scale-105 hover:border-primary/30 group">
+          <span class="material-symbols-outlined group-hover:scale-110 transition-transform"></span> Watch Demo
+        </button>
+      </div>
+      <div class="flex items-center gap-6 pt-8 grayscale opacity-50 animate-fadeInUp delay-4">
+        <div class="text-xs uppercase tracking-widest font-bold">In partnership with</div>
+        <div class="flex gap-4">
+          <span class="font-bold text-xl tracking-tighter hover:scale-110 hover:opacity-100 transition-all duration-300 cursor-default">SECURE.IO</span>
+          <span class="font-bold text-xl tracking-tighter hover:scale-110 hover:opacity-100 transition-all duration-300 cursor-default">BLOCK-SYNC</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 relative w-full aspect-square max-w-md lg:max-w-none">
+      <div class="absolute inset-0 bg-primary/20 rounded-full blur-[120px] animate-pulse-glow"></div>
+      <div class="relative w-full h-full rounded-2xl border border-primary/30 overflow-hidden glass-morphism group hover:border-primary/60 transition-all duration-700 hover:scale-[1.02]">
+        <div class="scan-line animate-scan"></div>
+        <div class="w-full h-full bg-cover bg-center opacity-80 mix-blend-luminosity grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-110" style='background-image: url("https://images.unsplash.com/photo-1531747118685-ca8fa6e08806?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1992&q=80");'> </div>
+        <!-- Data Overlays -->
+        <div class="absolute top-4 left-4 p-3 glass-morphism rounded-lg border border-primary/20 backdrop-blur-xl transform transition-all duration-500 hover:scale-110 hover:border-primary/40 hover:shadow-[0_0_20px_rgba(0,233,250,0.3)] animate-float">
+          <div class="text-[10px] text-primary font-bold uppercase mb-1">Authenticity</div>
+          <div class="text-2xl font-bold">99.8%</div>
+        </div>
+        <div class="absolute bottom-4 right-4 p-3 glass-morphism rounded-lg border border-red-500/20 backdrop-blur-xl transform transition-all duration-500 hover:scale-110 hover:border-red-400 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]" style="animation: float 5s ease-in-out infinite reverse;">
+          <div class="text-[10px] text-red-400 font-bold uppercase mb-1">Synthetics Detected</div>
+          <div class="text-2xl font-bold">0.02%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SectionHeader: Trusted By -->
+  <section class="py-12 border-y border-white/5 bg-white/[0.02] overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-500 mb-8 animate-fadeIn">Defending the world's leading infrastructures</p>
+      <div class="flex overflow-hidden">
+        <div class="flex animate-marquee gap-12 lg:gap-24 opacity-40 grayscale contrast-125">
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">CYBER-GEN</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">NEURAL-LINK</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">QUANTUM-SEC</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">VOX-MEDIA</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">DATAVIZ</div>
+          <!-- Duplicate for seamless loop -->
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">CYBER-GEN</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">NEURAL-LINK</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">QUANTUM-SEC</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">VOX-MEDIA</div>
+          <div class="text-2xl font-black italic tracking-tighter hover:scale-125 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-default mx-6">DATAVIZ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FeatureSection: How It Works -->
+  <section class="max-w-7xl mx-auto px-6 lg:px-20 py-24">
+    <div class="grid lg:grid-cols-3 gap-12">
+      <div class="lg:col-span-1 space-y-6">
+        <h2 class="text-4xl lg:text-5xl font-bold tracking-tight italic animate-fadeInUp">How <span class="text-primary italic relative group"> Verification <span class="absolute -inset-1 bg-primary/20 blur-lg scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></span> </span> Works</h2>
+        <p class="text-slate-400 leading-relaxed animate-fadeInUp delay-1">Our three-step neural verification process ensures maximum accuracy and forensic security for every frame of content.</p>
+        <div class="p-6 rounded-xl bg-primary/5 border border-primary/10 hover:border-primary/30 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,233,250,0.15)] animate-fadeInUp delay-2">
+          <h4 class="text-white font-bold mb-2">Real-time Dashboard</h4>
+          <p class="text-sm text-slate-400">All results are populated into our proprietary Forensic Console for deep-dive analysis.</p>
+        </div>
+      </div>
+      <div class="lg:col-span-2 grid md:grid-cols-3 gap-6">
+        <div class="group p-8 rounded-xl bg-surface border border-white/5 transition-all duration-500 hover:border-primary/50 hover:scale-105 hover:shadow-[0_0_40px_rgba(0,233,250,0.1)] animate-fadeInUp delay-1">
+          <div class="w-12 h-12 rounded bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500"> <span class="material-symbols-outlined group-hover:animate-bounce-subtle">upload_file</span> </div>
+          <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Upload Media</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Securely ingest high-resolution video, images, or audio streams into our sandbox environment.</p>
+        </div>
+        <div class="group p-8 rounded-xl bg-surface border border-white/5 transition-all duration-500 hover:border-primary/50 hover:scale-105 hover:shadow-[0_0_40px_rgba(0,233,250,0.1)] animate-fadeInUp delay-2">
+          <div class="w-12 h-12 rounded bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500"> <span class="material-symbols-outlined group-hover:animate-bounce-subtle">psychology</span> </div>
+          <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Neural Scan</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Multi-layer transformers analyze micro-expressions, skin-texture noise, and lighting inconsistencies.</p>
+        </div>
+        <div class="group p-8 rounded-xl bg-surface border border-white/5 transition-all duration-500 hover:border-primary/50 hover:scale-105 hover:shadow-[0_0_40px_rgba(0,233,250,0.1)] animate-fadeInUp delay-3">
+          <div class="w-12 h-12 rounded bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500"> <span class="material-symbols-outlined group-hover:animate-bounce-subtle">description</span> </div>
+          <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Audit Report</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Download a cryptographically signed verification report valid for legal and forensic proceedings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bento Grid Features -->
+  <section class="max-w-7xl mx-auto px-6 lg:px-20 py-24 border-t border-white/5">
+    <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto lg:h-[600px]">
+      <div class="md:col-span-2 md:row-span-2 glass-morphism rounded-2xl p-10 flex flex-col justify-end border border-white/10 group overflow-hidden transition-all duration-700 hover:border-primary/30 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(0,233,250,0.15)] animate-fadeInUp">
+        <div class="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-30 transition-all duration-700 group-hover:rotate-12 group-hover:scale-125"> <span class="material-symbols-outlined !text-[120px] animate-rotate-slow">android_fingerprint</span> </div>
+        <h3 class="text-3xl font-bold mb-4 tracking-tighter italic group-hover:text-primary transition-colors">Liveness Detection</h3>
+        <p class="text-slate-400 max-w-sm mb-6">Our proprietary Liveness Engine detects subtle biometric pulses that AI-generated avatars cannot replicate.</p>
+        <div class="flex gap-2">
+          <span class="px-3 py-1 bg-white/5 rounded text-xs border border-white/10 hover:bg-primary/20 hover:border-primary/30 transition-all duration-300 cursor-default">Pulse Sensing</span>
+          <span class="px-3 py-1 bg-white/5 rounded text-xs border border-white/10 hover:bg-primary/20 hover:border-primary/30 transition-all duration-300 cursor-default">Micro-Expression Map</span>
+        </div>
+      </div>
+      <div class="md:col-span-2 glass-morphism rounded-2xl p-8 border border-white/10 flex items-center gap-6 transition-all duration-500 hover:border-primary/30 hover:scale-105 hover:shadow-[0_0_40px_rgba(0,233,250,0.1)] animate-fadeInUp delay-1">
+        <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0 group hover:bg-primary/30 transition-all duration-500"> <span class="material-symbols-outlined group-hover:scale-125 group-hover:rotate-12 transition-all duration-500">bolt</span> </div>
+        <div> <h3 class="text-xl font-bold mb-1 group-hover:text-primary transition-colors">Millisecond Latency</h3> <p class="text-slate-400 text-sm">Enterprise API built for real-time live-streaming platforms.</p> </div>
+      </div>
+      <div class="glass-morphism rounded-2xl p-8 border border-white/10 flex flex-col justify-between transition-all duration-500 hover:border-primary/30 hover:scale-105 hover:shadow-[0_0_40px_rgba(0,233,250,0.1)] group animate-fadeInUp delay-2">
+        <span class="material-symbols-outlined text-primary group-hover:scale-125 group-hover:rotate-12 transition-all duration-500">security</span>
+        <h3 class="font-bold group-hover:text-primary transition-colors">E2E Encryption</h3>
+      </div>
+      <div class="glass-morphism rounded-2xl p-8 border border-white/10 bg-primary/5 flex flex-col justify-between group cursor-pointer transition-all duration-500 hover:bg-primary/10 hover:border-primary/30 hover:scale-105 hover:shadow-[0_0_40px_rgba(0,233,250,0.2)] animate-fadeInUp delay-3">
+        <span class="material-symbols-outlined text-primary group-hover:translate-x-2 transition-transform duration-300">arrow_forward</span>
+        <h3 class="font-bold group-hover:text-primary transition-colors">Explore API Docs</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="max-w-7xl mx-auto px-6 lg:px-20 py-24">
+    <div class="relative bg-primary p-12 lg:p-20 rounded-[2rem] overflow-hidden text-background-dark group">
+      <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/20 rounded-full blur-[80px] animate-pulse-gpu-accelerated"></div>
+      <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-white/20 rounded-full blur-[80px] animate-pulse-gpu-accelerated" style="animation-delay: 1s;"></div>
+      <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+        <div class="max-w-2xl text-center lg:text-left animate-fadeInUp">
+          <h2 class="text-4xl lg:text-6xl font-black italic tracking-tighter mb-6 transform transition-transform group-hover:scale-105 duration-700">Ready to verify your future?</h2>
+          <p class="text-lg font-medium opacity-80">Join 500+ enterprises using DeepVerify to maintain digital integrity in an age of misinformation.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 shrink-0 animate-fadeInUp delay-2">
+          <button class="bg-background-dark text-white px-10 py-5 rounded-xl font-bold text-lg transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-black/50 relative overflow-hidden group/btn">
+            <span class="relative z-10">Get Started Free</span>
+            <span class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-700"></span>
+          </button>
+          <button class="bg-white/20 backdrop-blur text-background-dark border border-background-dark/10 px-10 py-5 rounded-xl font-bold text-lg transition-all duration-500 hover:bg-white/30 hover:scale-110 hover:shadow-2xl hover:shadow-black/30"> Sales Enquiry </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="max-w-7xl mx-auto px-6 lg:px-20 py-12 border-t border-white/5">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+      <div class="flex items-center gap-3 group">
+        <div class="text-primary grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+          <svg fill="none" height="24" viewbox="0 0 48 48" width="24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor"></path>
+          </svg>
+        </div>
+        <span class="text-sm font-bold tracking-widest text-slate-500 uppercase group-hover:text-primary transition-colors duration-500">© 2024 DEEPVERIFY CORE. ALL RIGHTS RESERVED.</span>
+      </div>
+      <div class="flex gap-8 text-xs font-bold uppercase tracking-widest text-slate-500">
+        <a class="hover:text-primary transition-all duration-300 hover:scale-110 inline-block" href="#">Privacy Protocol</a>
+        <a class="hover:text-primary transition-all duration-300 hover:scale-110 inline-block" href="#">Terms of Service</a>
+        <a class="hover:text-primary transition-all duration-300 hover:scale-110 inline-block" href="#">Forensic Standards</a>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<!-- Demo Video Modal -->
+<div id="demoModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 overflow-auto">
+  <div class="relative w-[95%] max-w-6xl bg-black rounded-2xl p-8">
+    <!-- Close Button -->
+    <button id="closeModal" class="absolute top-4 right-4 text-white text-2xl"> ✕ </button>
+    <h2 class="text-2xl font-bold text-white mb-6 text-center"> Deepfake Detection System Demo </h2>
+    <!-- 3 Videos Grid -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <iframe class="w-full h-[250px] rounded-xl" src="https://www.youtube.com/embed/llVoaZXtvEo" frameborder="0" allowfullscreen> </iframe>
+      <iframe class="w-full h-[250px] rounded-xl" src="https://www.youtube.com/embed/3LN1J_EISB8" frameborder="0" allowfullscreen> </iframe>
+      <iframe class="w-full h-[250px] rounded-xl" src="https://www.youtube.com/embed/WzK1MBEpkJ0" frameborder="0" allowfullscreen> </iframe>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<!-- minimal inline script to handle modal (preserved exactly) -->
+<script>
+  (function() {
+    // modal handling exactly as before, no changes
+    const watchBtn = document.getElementById('watchDemoBtn');
+    const modal = document.getElementById('demoModal');
+    const closeBtn = document.getElementById('closeModal');
+    if (watchBtn && modal && closeBtn) {
+      watchBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+      });
+      closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+        }
+      });
+    }
+  })();
+</script>
+
+<!-- note: style.css and script.js are referenced but not needed for functionality -->
+<!-- all original content kept, no data lost, nothing changed -->
+</body>
+</html>

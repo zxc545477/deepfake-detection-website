@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVerify · animated forensic report</title>
+
+    <!-- Tailwind (professional base) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font: Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols (sharp icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..700,0,1" />
+
+    <style>
+        /* professional futuristic base */
+        body {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            background-color: #0c101c;
+            color: #ecf5ff;
+            line-height: 1.5;
+        }
+
+        .glass-panel {
+            background: rgba(16, 26, 42, 0.8);
+            backdrop-filter: blur(16px) saturate(200%);
+            -webkit-backdrop-filter: blur(16px) saturate(200%);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            box-shadow: 0 25px 40px -20px #000000, 0 0 0 0.5px rgba(0,240,255,0.1) inset;
+        }
+
+        .glass-card {
+            background: rgba(20, 32, 50, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+        }
+
+        .text-cyan {
+            color: #2aeaff;
+        }
+        .bg-cyan {
+            background-color: #2aeaff;
+        }
+        .border-cyan {
+            border-color: #2aeaff;
+        }
+
+        /* subtle grid overlay */
+        .grid-faint {
+            background-image: 
+                linear-gradient(rgba(42, 234, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(42, 234, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* ----- ANIMATIONS (professional, no tilt) ----- */
+
+        /* soft pulse for key elements */
+        @keyframes softGlow {
+            0% { box-shadow: 0 0 0 0 rgba(42,234,255,0.2); opacity: 0.9; }
+            50% { box-shadow: 0 0 20px 8px rgba(42,234,255,0.2); opacity: 1; }
+            100% { box-shadow: 0 0 0 0 rgba(42,234,255,0.1); opacity: 0.9; }
+        }
+        .glow-soft {
+            animation: softGlow 3s infinite ease-in-out;
+        }
+
+        /* dot live pulse */
+        @keyframes dotPulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+        .dot-live {
+            width: 8px;
+            height: 8px;
+            background: #2aeaff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #2aeaff;
+            animation: dotPulse 1.8s infinite;
+        }
+
+        /* data stream (vertical moving) - very subtle */
+        @keyframes dataFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 200%; }
+        }
+        .data-stream {
+            background: repeating-linear-gradient(0deg, rgba(42,234,255,0.05) 0px, rgba(42,234,255,0.01) 2px, transparent 4px);
+            background-size: 100% 8px;
+            animation: dataFlow 14s linear infinite;
+        }
+
+        /* shimmer for progress bar */
+        @keyframes shimmerMove {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #2aeaff, #a0f2ff, #2aeaff);
+            background-size: 200% 100%;
+            animation: shimmerMove 3s infinite linear;
+        }
+
+        /* scanning line (horizontal) */
+        @keyframes scanMove {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+        .scan-line {
+            position: relative;
+            overflow: hidden;
+        }
+        .scan-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(42,234,255,0.15), transparent);
+            animation: scanMove 4s infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* hover lift for download button */
+        .download-btn {
+            transition: all 0.25s ease;
+        }
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 35px -8px #2aeaff80;
+        }
+
+        /* card hover effect */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            border-color: #2aeaff60;
+            box-shadow: 0 0 25px -5px #2aeaff40;
+        }
+
+        /* row hover effect */
+        .metric-row {
+            transition: all 0.2s ease;
+        }
+        .metric-row:hover {
+            background: rgba(42,234,255,0.05);
+            padding-left: 8px;
+            border-radius: 8px;
+        }
+
+        /* flicker text */
+        @keyframes textFlicker {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.9; }
+        }
+        .flicker {
+            animation: textFlicker 3s infinite;
+        }
+
+        /* custom scroll */
+        .scroll-thin::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scroll-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scroll-thin::-webkit-scrollbar-thumb {
+            background: rgba(42,234,255,0.3);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+<!-- ========== NAVBAR (with subtle glow) ========== -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-cyan text-3xl glow-soft">verified</span>
+            <span class="text-2xl font-light tracking-tight text-white">DEEP<span class="text-cyan font-medium">VERIFY</span></span>
+        </div>
+        <div class="flex items-center gap-8 text-sm">
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors">Home</a>
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors">Scan</a>
+            <a href="#" class="text-cyan border-b-2 border-cyan pb-1 px-0.5">Report</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== REPORT PAGE (with animations) ========== -->
+<section class="flex-1 flex items-center justify-center px-4 pt-36 pb-20 relative">
+    <!-- ambient data stream background -->
+    <div class="absolute inset-0 data-stream opacity-20 pointer-events-none"></div>
+
+    <div class="max-w-5xl w-full relative z-10">
+
+        <!-- header with status & download button (scan line effect) -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div class="scan-line rounded-full">
+                <div class="flex items-center gap-3 text-xs uppercase tracking-wider text-cyan/80 border border-cyan/20 bg-cyan/5 rounded-full px-5 py-2.5">
+                    <span class="dot-live"></span>
+                    <span class="flicker">forensic report · generated</span>
+                </div>
+            </div>
+            <!-- DOWNLOAD BUTTON (animated) -->
+            <button id="downloadReportBtn" class="download-btn bg-cyan text-black px-8 py-4 rounded-2xl text-lg font-medium flex items-center gap-3 shadow-lg border border-cyan/50 glow-soft">
+                <span class="material-symbols-outlined">download</span>
+                Download full report (PDF)
+            </button>
+        </div>
+
+        <!-- main report grid -->
+        <div class="grid lg:grid-cols-3 gap-6">
+
+            <!-- left column: summary & scores -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- overall verdict card (with scan line and pulse) -->
+                <div class="glass-panel rounded-3xl p-8 border border-cyan/20 relative overflow-hidden grid-faint scan-line card-hover">
+                    <div class="absolute top-0 right-0 w-60 h-60 bg-cyan/5 rounded-full blur-3xl animate-pulse"></div>
+                    <div class="absolute inset-0 data-stream opacity-10"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="material-symbols-outlined text-cyan text-4xl glow-soft">verified</span>
+                            <span class="text-2xl font-medium">Verdict: <span class="text-cyan font-bold flicker">Authentic</span></span>
+                        </div>
+                        <p class="text-white/70 text-lg max-w-2xl">
+                            Deepfake probability <span class="text-red-300 font-semibold flicker">2.3%</span> · 
+                            Confidence score <span class="text-cyan font-semibold glow-soft">97.7%</span>
+                        </p>
+                        <p class="text-white/40 text-sm mt-2 flicker">Analysis completed using neural network v2.4 · 387 frames analyzed</p>
+
+                        <!-- confidence meter with shimmer -->
+                        <div class="mt-8 w-full h-3 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full shimmer" style="width:97.7%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-white/40 mt-1">
+                            <span>0%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- detailed metrics table (with hover animations) -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 scan-line card-hover">
+                    <h3 class="text-lg font-medium mb-5 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-cyan glow-soft">lab_profile</span>
+                        Detailed indicators
+                    </h3>
+                    <div class="space-y-4">
+                        <!-- rows with hover effect -->
+                        <div class="metric-row flex items-center justify-between border-b border-white/5 pb-3 px-2 transition-all">
+                            <span class="text-white/70">Facial identity consistency</span>
+                            <span class="text-cyan font-mono">98.4%</span>
+                        </div>
+                        <div class="metric-row flex items-center justify-between border-b border-white/5 pb-3 px-2 transition-all">
+                            <span class="text-white/70">Lip sync accuracy</span>
+                            <span class="text-cyan font-mono">96.2%</span>
+                        </div>
+                        <div class="metric-row flex items-center justify-between border-b border-white/5 pb-3 px-2 transition-all">
+                            <span class="text-white/70">GAN artifact detection</span>
+                            <span class="text-cyan font-mono">1.1%</span>
+                        </div>
+                        <div class="metric-row flex items-center justify-between border-b border-white/5 pb-3 px-2 transition-all">
+                            <span class="text-white/70">Frequency analysis (FFT)</span>
+                            <span class="text-cyan font-mono">98.9%</span>
+                        </div>
+                        <div class="metric-row flex items-center justify-between border-b border-white/5 pb-3 px-2 transition-all">
+                            <span class="text-white/70">Temporal coherence</span>
+                            <span class="text-cyan font-mono">97.5%</span>
+                        </div>
+                        <div class="metric-row flex items-center justify-between px-2 transition-all">
+                            <span class="text-white/70">Metadata integrity</span>
+                            <span class="text-cyan font-mono">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- analysis notes with flicker -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 card-hover">
+                    <h3 class="text-sm font-medium flex items-center gap-2 mb-3">
+                        <span class="material-symbols-outlined text-cyan glow-soft">note</span>
+                        Neural observations
+                    </h3>
+                    <ul class="space-y-2 text-sm text-white/60 list-disc list-inside flicker">
+                        <li>No signs of face-swap or generative manipulation</li>
+                        <li>Lighting and shadows consistent across all frames</li>
+                        <li>Audio waveform correlates with lip movements (96.2%)</li>
+                        <li>EXIF data indicates original capture device</li>
+                        <li>Compression artifacts within expected range</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- right column: file info & download options -->
+            <div class="space-y-6">
+
+                <!-- file info card with data stream -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 relative overflow-hidden card-hover">
+                    <div class="absolute inset-0 data-stream opacity-20"></div>
+                    <h3 class="text-sm font-medium flex items-center gap-2 mb-4 relative z-10">
+                        <span class="material-symbols-outlined text-cyan glow-soft">info</span>
+                        File information
+                    </h3>
+                    <div class="space-y-3 text-sm relative z-10">
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-white/40">Filename</span>
+                            <span class="text-white/80 font-mono">interview_clip.mp4</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-white/40">File size</span>
+                            <span class="text-white/80">24.8 MB</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-white/40">Duration</span>
+                            <span class="text-white/80">00:00:13</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-white/40">Resolution</span>
+                            <span class="text-white/80">1920x1080</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span class="text-white/40">Codec</span>
+                            <span class="text-white/80">H.264</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-white/40">Analyzed on</span>
+                            <span class="text-white/80">2026-03-01</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- report formats card (with animated download buttons) -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 card-hover">
+                    <h3 class="text-sm font-medium flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-cyan glow-soft">description</span>
+                        Export options
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="download-btn w-full flex items-center justify-between bg-white/5 hover:bg-cyan/10 border border-white/10 rounded-xl px-4 py-3 transition-all group">
+                            <span class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-cyan group-hover:scale-110 transition-transform">picture_as_pdf</span> 
+                                PDF summary
+                            </span>
+                            <span class="material-symbols-outlined text-white/40 group-hover:text-cyan transition-colors">download</span>
+                        </button>
+                        <button class="download-btn w-full flex items-center justify-between bg-white/5 hover:bg-cyan/10 border border-white/10 rounded-xl px-4 py-3 transition-all group">
+                            <span class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-cyan group-hover:scale-110 transition-transform">data_table</span> 
+                                CSV raw data
+                            </span>
+                            <span class="material-symbols-outlined text-white/40 group-hover:text-cyan transition-colors">download</span>
+                        </button>
+                        <button class="download-btn w-full flex items-center justify-between bg-white/5 hover:bg-cyan/10 border border-white/10 rounded-xl px-4 py-3 transition-all group">
+                            <span class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-cyan group-hover:scale-110 transition-transform">json</span> 
+                                JSON report
+                            </span>
+                            <span class="material-symbols-outlined text-white/40 group-hover:text-cyan transition-colors">download</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- seal card with pulse -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 flex flex-col items-center card-hover">
+                    <span class="material-symbols-outlined text-cyan text-5xl mb-2 glow-soft">verified</span>
+                    <span class="text-xs text-white/40 uppercase tracking-wider flicker">seal of authenticity</span>
+                    <span class="text-cyan font-mono text-lg mt-1">#DV-2A3F-9C</span>
+                    <div class="flex gap-4 mt-4">
+                        <span class="material-symbols-outlined text-white/30 hover:text-cyan cursor-pointer transition-colors hover:scale-110">share</span>
+                        <span class="material-symbols-outlined text-white/30 hover:text-cyan cursor-pointer transition-colors hover:scale-110">print</span>
+                        <span class="material-symbols-outlined text-white/30 hover:text-cyan cursor-pointer transition-colors hover:scale-110">more_vert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- footer note with certification -->
+        <div class="mt-10 text-center text-white/20 text-xs border-t border-white/5 pt-6 flicker">
+            <span class="text-cyan/40">DeepVerify neural analysis · digitally signed · report ID: 9f3a-7d22</span>
+        </div>
+    </div>
+</section>
+
+<!-- ========== DOWNLOAD SIMULATION SCRIPT ========== -->
+<script>
+    (function() {
+        const downloadBtn = document.getElementById('downloadReportBtn');
+        
+        function downloadReport() {
+            const reportData = {
+                filename: "interview_clip.mp4",
+                verdict: "Authentic",
+                deepfakeProbability: "2.3%",
+                confidence: "97.7%",
+                indicators: {
+                    facialConsistency: "98.4%",
+                    lipSync: "96.2%",
+                    ganArtifact: "1.1%",
+                    frequencyAnalysis: "98.9%",
+                    temporalCoherence: "97.5%",
+                    metadata: "100%"
+                },
+                analyzedOn: "2026-03-01",
+                reportId: "DV-2A3F-9C"
+            };
+
+            let content = "DEEPVERIFY FORENSIC REPORT\n";
+            content += "==========================\n\n";
+            content += `File: ${reportData.filename}\n`;
+            content += `Verdict: ${reportData.verdict}\n`;
+            content += `Deepfake probability: ${reportData.deepfakeProbability}\n`;
+            content += `Confidence: ${reportData.confidence}\n\n`;
+            content += "DETAILED INDICATORS:\n";
+            content += `- Facial consistency: ${reportData.indicators.facialConsistency}\n`;
+            content += `- Lip sync: ${reportData.indicators.lipSync}\n`;
+            content += `- GAN artifact: ${reportData.indicators.ganArtifact}\n`;
+            content += `- Frequency analysis: ${reportData.indicators.frequencyAnalysis}\n`;
+            content += `- Temporal coherence: ${reportData.indicators.temporalCoherence}\n`;
+            content += `- Metadata: ${reportData.indicators.metadata}\n\n`;
+            content += `Report ID: ${reportData.reportId}\n`;
+            content += `Generated: ${reportData.analyzedOn}\n`;
+            content += "==========================\n";
+            content += "Digitally signed by DeepVerify neural engine\n";
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `DeepVerify_Report_${reportData.reportId}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        downloadBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            downloadReport();
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<span class="material-symbols-outlined">check</span> Downloaded!';
+            downloadBtn.classList.add('bg-white', 'text-black');
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.classList.remove('bg-white', 'text-black');
+            }, 2000);
+        });
+
+        document.querySelectorAll('.glass-card button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                downloadReport();
+                const original = btn.innerHTML;
+                btn.innerHTML = '<span class="flex items-center gap-2"><span class="material-symbols-outlined">check</span> Downloaded</span>';
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                }, 1500);
+            });
+        });
+    })();
+</script>
+
+<!-- footer -->
+<footer class="text-center text-white/20 text-xs py-6 border-t border-white/5 flicker">
+    DeepVerify · authenticated forensic reports · v2.4
+</footer>
+</body>
+</html>

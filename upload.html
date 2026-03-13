@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVerify · neural forensics</title>
+
+    <!-- Tailwind (dark professional) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font: Space Grotesk + Inter fallback -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols (sharp, professional icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..700,0,1" />
+
+    <style>
+        /* ---------- professional futuristic base ---------- */
+        body {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            background-color: #0c0c14;
+            color: #fff;
+            letter-spacing: 0.01em;
+        }
+
+        /* subtle grain texture */
+        .grain {
+            position: relative;
+        }
+        .grain::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            pointer-events: none;
+            opacity: 0.2;
+            z-index: 100;
+        }
+
+        .glass-deep {
+            background: rgba(12, 15, 25, 0.65);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(32, 183, 189, 0.6), 0 0 0 1px rgba(0, 255, 255, 0.1) inset;
+        }
+
+        .glass-panel {
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            box-shadow: 0 15px 35px -10px #00000080, 0 0 0 0.5px rgba(0, 255, 255, 0.1) inset;
+        }
+
+        .text-cyan {
+            color: #2df0ff;
+        }
+        .bg-cyan {
+            background-color: #2df0ff;
+        }
+        .border-cyan {
+            border-color: #2df0ff;
+        }
+
+        .neural-grid {
+            background-image: 
+                linear-gradient(rgba(45, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(45, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 35px 35px;
+        }
+
+        /* ----- refined animations (professional, not cartoonish) ----- */
+        @keyframes core-pulse {
+            0% { opacity: 0.4; box-shadow: 0 0 0 0 rgba(45,240,255,0.3); }
+            70% { opacity: 0.8; box-shadow: 0 0 18px 4px rgba(45,240,255,0.2); }
+            100% { opacity: 0.4; box-shadow: 0 0 0 0 rgba(255, 188, 45, 0); }
+        }
+        .core-pulse {
+            animation: core-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes data-flow {
+            0% { transform: translateX(-30%) skewX(-5deg); opacity: 0; }
+            50% { opacity: 0.25; }
+            100% { transform: translateX(130%) skewX(-5deg); opacity: 0; }
+        }
+        .data-flow {
+            position: relative;
+            overflow: hidden;
+        }
+        .data-flow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(45,240,255,0.15), transparent);
+            animation: data-flow 3.5s infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* floating indicator */
+        @keyframes hover-glow {
+            0% { transform: translateY(0) scale(1); filter: brightness(1); }
+            50% { transform: translateY(-3px) scale(1.02); filter: brightness(1.2); }
+            100% { transform: translateY(0) scale(1); filter: brightness(1); }
+        }
+        .hover-glow-soft {
+            animation: hover-glow 5s infinite;
+        }
+
+        /* tab active style premium */
+        .tab-active-premium {
+            background: rgba(45, 240, 255, 0.12);
+            color: #2df0ff;
+            border-color: #2df0ff;
+            box-shadow: 0 0 15px rgba(45,240,255,0.2), 0 1px 0 #2df0ff inset, 0 -1px 0 #2df0ff inset;
+        }
+
+        /* scanning subtle line */
+        .scan-line {
+            position: relative;
+            isolation: isolate;
+        }
+        .scan-line::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #2df0ff, transparent);
+            opacity: 0.4;
+            animation: scanMove 4s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+        @keyframes scanMove {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(280px); } /* covers card height */
+            100% { transform: translateY(0); }
+        }
+
+        /* waveform refined */
+        .wave-bar-pro {
+            width: 3px;
+            height: 22px;
+            background: linear-gradient(to top, #2df0ff 0%, #a0f8ff 100%);
+            display: inline-block;
+            margin: 0 2px;
+            border-radius: 2px;
+            animation: wavePro 1.6s infinite ease;
+            opacity: 0.8;
+        }
+        @keyframes wavePro {
+            0%,100% { transform: scaleY(0.4); opacity: 0.4; }
+            50% { transform: scaleY(1.2); opacity: 1; }
+        }
+
+        /* rotating ring (minimalist) */
+        .ring-rotate {
+            animation: ringRotate 6s infinite linear;
+        }
+        @keyframes ringRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* blink dot */
+        .dot-intelligent {
+            width: 8px; height: 8px;
+            background: #2df0ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #2df0ff;
+            animation: dotPulse 1.8s infinite;
+        }
+        @keyframes dotPulse {
+            0% { opacity: 0.7; box-shadow: 0 0 5px #2df0ff; }
+            50% { opacity: 1; box-shadow: 0 0 15px #2df0ff; }
+            100% { opacity: 0.7; box-shadow: 0 0 5px #2df0ff; }
+        }
+
+        /* subtle corner accents */
+        .corner-accent {
+            position: relative;
+        }
+        .corner-accent::after {
+            content: '';
+            position: absolute;
+            bottom: 12px; right: 12px;
+            width: 30px; height: 30px;
+            border-right: 1.5px solid rgba(45,240,255,0.25);
+            border-bottom: 1.5px solid rgba(45,240,255,0.25);
+            pointer-events: none;
+        }
+        .corner-accent::before {
+            content: '';
+            position: absolute;
+            top: 12px; left: 12px;
+            width: 30px; height: 30px;
+            border-left: 1.5px solid rgba(45,240,255,0.25);
+            border-top: 1.5px solid rgba(45,240,255,0.25);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen grain text-gray-200 antialiased">
+
+<!-- fixed neural grid background (very faint) -->
+<div class="fixed inset-0 neural-grid opacity-20 pointer-events-none"></div>
+
+<!-- ========== NAVBAR (premium, minimal) ========== -->
+<nav class="fixed top-0 left-0 w-full z-50 glass-deep border-b border-cyan/20">
+    <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-cyan text-3xl">verified</span>
+            <span class="text-2xl font-semibold tracking-tight text-white">DEEP<span class="text-cyan font-light">VERIFY</span></span>
+            <span class="ml-3 text-[0.6rem] uppercase tracking-[0.2em] text-cyan/40 border border-cyan/20 px-2 py-0.5 rounded-full">v2.4</span>
+        </div>
+        <div class="hidden md:flex items-center gap-12 text-sm">
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-cyan after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">Upload</a>
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-cyan after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">Dashboard</a>
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-cyan after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">History</a>
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-cyan after:left-0 after:-bottom-1 after:transition-all after:duration-300 hover:after:w-full">API</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="dot-intelligent"></span>
+            <span class="text-xs text-cyan/70 uppercase tracking-wider">online</span>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== MAIN SECTION (professional futuristic) ========== -->
+<section class="relative pt-40 pb-24 px-6 max-w-7xl mx-auto">
+
+    <!-- subtle header with glitch-free typography -->
+    <div class="text-center mb-14">
+        <div class="inline-flex items-center gap-2 border border-cyan/20 rounded-full px-4 py-1.5 mb-5 backdrop-blur-sm">
+            <span class="material-symbols-outlined text-cyan text-lg">radar</span>
+            <span class="text-xs font-medium tracking-[0.2em] text-cyan/80">NEURAL DEEPFAKE DETECTION</span>
+        </div>
+        <h1 class="text-5xl md:text-6xl font-light tracking-tight text-white">
+            Media <span class="font-bold text-cyan">forensics</span>
+        </h1>
+        <p class="text-gray-400 max-w-2xl mx-auto mt-6 text-base leading-relaxed">
+            Advanced transformer-based analysis · authenticity scoring · tamper localization
+        </p>
+    </div>
+
+    <!-- main card - glass, with scanning line animation -->
+    <div class="glass-panel rounded-3xl p-8 lg:p-10 border border-cyan/20 shadow-2xl relative scan-line corner-accent" style="box-shadow: 0 30px 60px -20px #000000, 0 0 0 1px #2df0ff1a inset;">
+
+        <!-- selector tabs (professional) -->
+        <div class="flex flex-wrap gap-3 justify-center mb-12">
+            <button id="tabImage" class="group flex items-center gap-3 px-8 py-3.5 rounded-full border border-cyan/30 bg-black/40 text-white/90 font-medium transition-all duration-300 hover:border-cyan hover:text-cyan tab-active-premium">
+                <span class="material-symbols-outlined text-cyan">image</span>
+                <span>Image scan</span>
+                <span class="text-[0.6rem] bg-cyan/20 px-2 py-0.5 rounded-full text-cyan/90">AI</span>
+            </button>
+            <button id="tabVideo" class="group flex items-center gap-3 px-8 py-3.5 rounded-full border border-cyan/30 bg-black/40 text-white/70 font-medium transition-all duration-300 hover:border-cyan hover:text-cyan">
+                <span class="material-symbols-outlined text-cyan">videocam</span>
+                <span>Video analysis</span>
+                <span class="text-[0.6rem] bg-cyan/20 px-2 py-0.5 rounded-full text-cyan/90">4K</span>
+            </button>
+            <button id="tabAudio" class="group flex items-center gap-3 px-8 py-3.5 rounded-full border border-cyan/30 bg-black/40 text-white/70 font-medium transition-all duration-300 hover:border-cyan hover:text-cyan">
+                <span class="material-symbols-outlined text-cyan">audiotrack</span>
+                <span>Audio deepfake</span>
+                <span class="text-[0.6rem] bg-cyan/20 px-2 py-0.5 rounded-full text-cyan/90">Hz</span>
+            </button>
+        </div>
+
+        <!-- ===== IMAGE PANEL (professional) ===== -->
+        <div id="panelImage" class="tab-panel block transition-opacity duration-500">
+            <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                <!-- drop zone with refined effect -->
+                <div id="dropZoneImage" class="group relative glass-panel rounded-2xl border-2 border-dashed border-cyan/30 p-8 text-center cursor-pointer hover:border-cyan/70 transition-all data-flow">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="material-symbols-outlined text-6xl text-cyan/60 group-hover:text-cyan/90 transition-all ring-rotate inline-block">cloud_upload</span>
+                    <h3 class="text-xl font-medium mt-4 text-white/90">Upload image</h3>
+                    <p class="text-gray-400 text-sm mt-2">PNG, JPG, WEBP · up to 50 MB</p>
+                    <input type="file" id="fileInputImage" class="hidden" accept="image/png,image/jpeg,image/webp">
+                    <button onclick="document.getElementById('fileInputImage').click()" class="mt-6 bg-cyan/10 border border-cyan/40 text-cyan px-8 py-2.5 rounded-full text-sm font-medium tracking-wide hover:bg-cyan/20 transition-all">SELECT FILE</button>
+                </div>
+                <!-- preview panel with hover glow -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col items-center justify-center border border-cyan/20 core-pulse" id="imagePreviewPanel">
+                    <div id="imagePreviewContent" class="w-full flex flex-col items-center">
+                        <span class="material-symbols-outlined text-5xl text-cyan/40">image</span>
+                        <p class="text-gray-400 text-sm mt-4">awaiting image</p>
+                    </div>
+                    <button id="scanImageBtn" class="mt-6 bg-cyan/10 border border-cyan/30 text-cyan/90 px-8 py-3 rounded-full font-mono text-sm w-full transition-all hover:bg-cyan hover:text-white disabled:opacity-30" disabled>RUN FORENSICS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VIDEO PANEL (same refined style) ===== -->
+        <div id="panelVideo" class="tab-panel hidden transition-opacity duration-500">
+            <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                <div id="dropZoneVideo" class="glass-panel rounded-2xl border-2 border-dashed border-cyan/30 p-8 text-center cursor-pointer hover:border-cyan/70 transition-all data-flow">
+                    <span class="material-symbols-outlined text-6xl text-cyan/60 group-hover:text-cyan/90 transition-all ring-rotate inline-block">videocam</span>
+                    <h3 class="text-xl font-medium mt-4 text-white/90">Upload video</h3>
+                    <p class="text-gray-400 text-sm mt-2">MP4, MOV, WebM · up to 200 MB</p>
+                    <input type="file" id="fileInputVideo" class="hidden" accept="video/mp4,video/quicktime,video/webm">
+                    <button onclick="document.getElementById('fileInputVideo').click()" class="mt-6 bg-cyan/10 border border-cyan/40 text-cyan px-8 py-2.5 rounded-full text-sm font-medium tracking-wide hover:bg-cyan/20">SELECT FILE</button>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 flex flex-col items-center justify-center border border-cyan/20" id="videoPreviewPanel">
+                    <div id="videoPreviewContent" class="w-full flex flex-col items-center">
+                        <span class="material-symbols-outlined text-5xl text-cyan/40">movie</span>
+                        <p class="text-gray-400 text-sm mt-4">awaiting video</p>
+                    </div>
+                    <button id="scanVideoBtn" class="mt-6 bg-cyan/10 border border-cyan/30 text-cyan/90 px-8 py-3 rounded-full font-mono text-sm w-full hover:bg-cyan hover:text-black disabled:opacity-30" disabled>RUN FORENSICS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== AUDIO PANEL ===== -->
+        <div id="panelAudio" class="tab-panel hidden transition-opacity duration-500">
+            <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                <div id="dropZoneAudio" class="glass-panel rounded-2xl border-2 border-dashed border-cyan/30 p-8 text-center cursor-pointer hover:border-cyan/70 transition-all data-flow">
+                    <span class="material-symbols-outlined text-6xl text-cyan/60 ring-rotate inline-block">audiotrack</span>
+                    <h3 class="text-xl font-medium mt-4 text-white/90">Upload audio</h3>
+                    <p class="text-gray-400 text-sm mt-2">WAV, MP3, FLAC · up to 50 MB</p>
+                    <input type="file" id="fileInputAudio" class="hidden" accept="audio/wav,audio/mpeg,audio/flac">
+                    <button onclick="document.getElementById('fileInputAudio').click()" class="mt-6 bg-cyan/10 border border-cyan/40 text-cyan px-8 py-2.5 rounded-full text-sm font-medium tracking-wide hover:bg-cyan/20">SELECT FILE</button>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 flex flex-col items-center justify-center border border-cyan/20" id="audioPreviewPanel">
+                    <div id="audioPreviewContent" class="w-full flex flex-col items-center">
+                        <div class="flex items-end h-12 mb-4">
+                            <div class="wave-bar-pro" style="animation-delay:0.0s"></div>
+                            <div class="wave-bar-pro" style="animation-delay:0.2s"></div>
+                            <div class="wave-bar-pro" style="animation-delay:0.4s"></div>
+                            <div class="wave-bar-pro" style="animation-delay:0.6s"></div>
+                            <div class="wave-bar-pro" style="animation-delay:0.8s"></div>
+                            <div class="wave-bar-pro" style="animation-delay:1.0s"></div>
+                            <div class="wave-bar-pro" style="animation-delay:1.2s"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm">awaiting audio</p>
+                    </div>
+                    <button id="scanAudioBtn" class="mt-6 bg-cyan/10 border border-cyan/30 text-cyan/90 px-8 py-3 rounded-full font-mono text-sm w-full hover:bg-cyan hover:text-black disabled:opacity-30" disabled>RUN FORENSICS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- footer status (professional) -->
+        <div class="mt-10 flex items-center justify-between border-t border-cyan/20 pt-6 text-xs text-gray-400">
+            <div class="flex items-center gap-3">
+                <span class="dot-intelligent"></span>
+                <span class="tracking-wide">NEURAL ENGINE · QUANTUM READY</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-cyan/40 text-base ring-rotate">radar</span>
+                <span>DEEPFAKE INDEX <span class="text-cyan ml-1">0.00σ</span></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== SCRIPT (precise, professional) ========== -->
+<script>
+    (function() {
+        // ------ tabs ------
+        const tabImage = document.getElementById('tabImage');
+        const tabVideo = document.getElementById('tabVideo');
+        const tabAudio = document.getElementById('tabAudio');
+        const panelImage = document.getElementById('panelImage');
+        const panelVideo = document.getElementById('panelVideo');
+        const panelAudio = document.getElementById('panelAudio');
+        const tabs = [tabImage, tabVideo, tabAudio];
+
+        function setActiveTab(active) {
+            tabs.forEach(t => t.classList.remove('tab-active-premium', 'border-cyan', 'text-cyan', 'text-white/90'));
+            tabImage.classList.add('text-white/70');
+            tabVideo.classList.add('text-white/70');
+            tabAudio.classList.add('text-white/70');
+            if (active === 'image') {
+                tabImage.classList.add('tab-active-premium', 'border-cyan', 'text-cyan');
+                panelImage.classList.remove('hidden');
+                panelVideo.classList.add('hidden');
+                panelAudio.classList.add('hidden');
+            } else if (active === 'video') {
+                tabVideo.classList.add('tab-active-premium', 'border-cyan', 'text-cyan');
+                panelVideo.classList.remove('hidden');
+                panelImage.classList.add('hidden');
+                panelAudio.classList.add('hidden');
+            } else if (active === 'audio') {
+                tabAudio.classList.add('tab-active-premium', 'border-cyan', 'text-cyan');
+                panelAudio.classList.remove('hidden');
+                panelImage.classList.add('hidden');
+                panelVideo.classList.add('hidden');
+            }
+        }
+
+        tabImage.addEventListener('click', (e) => { e.preventDefault(); setActiveTab('image'); });
+        tabVideo.addEventListener('click', (e) => { e.preventDefault(); setActiveTab('video'); });
+        tabAudio.addEventListener('click', (e) => { e.preventDefault(); setActiveTab('audio'); });
+
+        // ------ file handler (clean, pro) ------
+        function setupPanel(type) {
+            let dropZone, fileInput, previewContent, scanBtn;
+            if (type === 'image') {
+                dropZone = document.getElementById('dropZoneImage');
+                fileInput = document.getElementById('fileInputImage');
+                previewContent = document.getElementById('imagePreviewContent');
+                scanBtn = document.getElementById('scanImageBtn');
+            } else if (type === 'video') {
+                dropZone = document.getElementById('dropZoneVideo');
+                fileInput = document.getElementById('fileInputVideo');
+                previewContent = document.getElementById('videoPreviewContent');
+                scanBtn = document.getElementById('scanVideoBtn');
+            } else {
+                dropZone = document.getElementById('dropZoneAudio');
+                fileInput = document.getElementById('fileInputAudio');
+                previewContent = document.getElementById('audioPreviewContent');
+                scanBtn = document.getElementById('scanAudioBtn');
+            }
+
+            if (!dropZone) return;
+
+            // reset button text later
+            const defaultText = scanBtn.innerText;
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-cyan/80', 'bg-cyan/5'); });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-cyan/80', 'bg-cyan/5'));
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-cyan/80', 'bg-cyan/5');
+                if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], type, previewContent, scanBtn, fileInput);
+            });
+
+            fileInput.addEventListener('change', function() { if (this.files[0]) handleFile(this.files[0], type, previewContent, scanBtn, fileInput); });
+            scanBtn.disabled = true;
+
+            // simulate professional analysis (no cartoon)
+            scanBtn.addEventListener('click', function() {
+                if (scanBtn.disabled) return;
+                scanBtn.disabled = true;
+                const steps = ['ANALYZING', 'SPECTRAL', 'VERIFY', 'REPORT'];
+                let i = 0;
+                scanBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-base mr-2">radar</span> 0%`;
+                const interval = setInterval(() => {
+                    i++;
+                  if (i === 4) {
+    clearInterval(interval);
+    scanBtn.innerHTML = `✅ AUTHENTIC 98.3%`;
+    
+    setTimeout(() => {
+        window.location.href = "auth.html";
+    }, 1000); // redirect after 1 second
+}
+                }, 600);
+            });
+        }
+
+        function handleFile(file, type, previewContent, scanBtn, fileInput) {
+            const maxSize = type === 'video' ? 200 * 1024 * 1024 : 50 * 1024 * 1024;
+            if (file.size > maxSize) {
+                previewContent.innerHTML = `<span class="text-red/80 text-sm">size exceeds limit</span>`;
+                scanBtn.disabled = true;
+                return;
+            }
+
+            scanBtn.disabled = false;
+            scanBtn.innerText = (type === 'image' ? 'RUN FORENSICS' : (type === 'video' ? 'RUN FORENSICS' : 'RUN FORENSICS'));
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (type === 'image') {
+                    previewContent.innerHTML = `<img src="${e.target.result}" class="max-h-48 rounded-lg border border-cyan/30 shadow-lg" />`;
+                } else if (type === 'video') {
+                    previewContent.innerHTML = `<video src="${e.target.result}" controls class="max-h-48 rounded-lg border border-cyan/30 w-full"></video>`;
+                } else {
+                    previewContent.innerHTML = `
+                        <div class="flex items-end h-12 mb-2">
+                            ${Array.from({length:9}, (_,i)=>`<div class="wave-bar-pro" style="animation-delay:${i*0.1}s"></div>`).join('')}
+                        </div>
+                        <audio src="${e.target.result}" controls class="w-full mt-2"></audio>
+                        <p class="text-xs text-gray-400 mt-2">${file.name}</p>
+                    `;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        setupPanel('image');
+        setupPanel('video');
+        setupPanel('audio');
+
+        // reset scan text on new file selection
+        document.getElementById('fileInputImage').addEventListener('change', () => document.getElementById('scanImageBtn').innerText = 'RUN FORENSICS');
+        document.getElementById('fileInputVideo').addEventListener('change', () => document.getElementById('scanVideoBtn').innerText = 'RUN FORENSICS');
+        document.getElementById('fileInputAudio').addEventListener('change', () => document.getElementById('scanAudioBtn').innerText = 'RUN FORENSICS');
+    })();
+</script>
+
+<!-- ========== FOOTER (minimal) ========== -->
+<footer class="text-center text-gray-500 text-xs py-8 border-t border-cyan/10 mt-10">
+    <span class="tracking-[0.2em]">DEEPVERIFY · CONTINUOUS LEARNING · © 2026</span>
+</footer>
+</body>
+</html>

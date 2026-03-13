@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVerify · professional forensics</title>
+
+    <!-- Tailwind (clean base) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font: Space Grotesk (professional, futuristic) -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols (sharp, minimal icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..700,0,1" />
+
+    <style>
+        /* ---------- professional base (no tilting, no distortion) ---------- */
+        body {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            background-color: #0b0e16;
+            color: #eef3fc;
+            line-height: 1.5;
+        }
+
+        /* clean glassmorphism */
+        .glass-panel {
+            background: rgba(15, 22, 34, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 230, 255, 0.12);
+            box-shadow: 0 20px 35px -20px rgba(0,0,0,0.9), 0 0 0 0.5px rgba(0,230,255,0.1) inset;
+        }
+
+        .glass-card {
+            background: rgba(18, 26, 40, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 230, 255, 0.1);
+            box-shadow: 0 15px 25px -15px #000;
+        }
+
+        .text-cyan {
+            color: #2ae2ff;
+        }
+        .bg-cyan {
+            background-color: #2ae2ff;
+        }
+        .border-cyan {
+            border-color: #2ae2ff;
+        }
+
+        /* subtle grid background (very faint) */
+        .grid-subtle {
+            background-image: 
+                linear-gradient(rgba(42, 226, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(42, 226, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* ----- PROFESSIONAL ANIMATIONS (no tilt, no spin, just opacity/glow/pulse) ----- */
+
+        /* smooth pulse for core elements */
+        @keyframes softGlow {
+            0% { opacity: 0.7; box-shadow: 0 0 0 0 rgba(42,226,255,0.2); }
+            50% { opacity: 1; box-shadow: 0 0 16px 4px rgba(42,226,255,0.2); }
+            100% { opacity: 0.7; box-shadow: 0 0 0 0 rgba(42,226,255,0.1); }
+        }
+        .glow-soft {
+            animation: softGlow 3s infinite ease-in-out;
+        }
+
+        /* progress bar fill animation (width transition is enough, but we add a subtle shimmer) */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #2ae2ff, #a0f0ff, #2ae2ff);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        /* dot pulse (static position, only opacity) */
+        @keyframes dotPulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        .dot-live {
+            width: 8px;
+            height: 8px;
+            background: #2ae2ff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #2ae2ff;
+            animation: dotPulse 1.8s infinite;
+        }
+
+        /* log line flicker (very subtle) */
+        @key textFade {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.9; }
+        }
+        .log-fade {
+            animation: textFade 3s infinite;
+        }
+
+        /* bar graph pulse (height changes slightly, no tilt) */
+        @keyframes barPulse {
+            0% { transform: scaleY(1); }
+            50% { transform: scaleY(1.08); }
+            100% { transform: scaleY(1); }
+        }
+        .bar-pulse {
+            animation: barPulse 2.2s infinite ease;
+            transform-origin: bottom;
+        }
+
+        /* wave animation for audio (vertical only) */
+        @keyframes waveSoft {
+            0%,100% { transform: scaleY(0.4); opacity: 0.5; }
+            50% { transform: scaleY(1.2); opacity: 1; }
+        }
+        .wave-bar {
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(to top, #2ae2ff, #a0e6ff);
+            display: inline-block;
+            margin: 0 2px;
+            border-radius: 2px;
+            animation: waveSoft 1.6s infinite ease;
+        }
+
+        /* scanning line (horizontal movement, no tilt) */
+        @keyframes scanMove {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+        .scan-line {
+            position: relative;
+            overflow: hidden;
+        }
+        .scan-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(42,226,255,0.15), transparent);
+            animation: scanMove 3.5s infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* no rotations, no tilts, no skews */
+        .rotate-none {
+            transform: none !important;
+        }
+
+        /* custom scroll (clean) */
+        .scroll-clean::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scroll-clean::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scroll-clean::-webkit-scrollbar-thumb {
+            background: rgba(42,226,255,0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+<!-- ========== NAVBAR (clean, no tilt) ========== -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-cyan text-3xl">verified</span>
+            <span class="text-2xl font-light tracking-tight text-white">DEEP<span class="text-cyan font-medium">VERIFY</span></span>
+        </div>
+        <div class="flex items-center gap-8 text-sm">
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors">Home</a>
+            <a href="#" class="text-cyan border-b-2 border-cyan pb-1 px-0.5">Scan</a>
+            <a href="#" class="text-white/70 hover:text-cyan transition-colors">History</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== MAIN SCANNING INTERFACE (professional, no tilt) ========== -->
+<section class="flex-1 flex items-center justify-center px-4 pt-36 pb-20">
+    <div class="max-w-6xl w-full">
+
+        <!-- header with animated status (only pulse) -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-10">
+            <div class="scan-line rounded-full">
+                <div class="flex items-center gap-3 text-xs uppercase tracking-wider text-cyan/80 border border-cyan/20 bg-cyan/5 rounded-full px-5 py-2.5">
+                    <span class="dot-live"></span>
+                    <span>neural engine · active</span>
+                    <span class="material-symbols-outlined text-cyan text-base glow-soft">radar</span>
+                </div>
+            </div>
+            <!-- file badge (static) -->
+            <div class="glass-card rounded-2xl px-5 py-3 flex items-center gap-5 border border-cyan/20">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-cyan">videocam</span>
+                    <span class="text-sm font-medium">interview_clip.mp4</span>
+                </div>
+                <div class="w-px h-6 bg-cyan/20"></div>
+                <span class="text-sm text-white/60">24.8 MB</span>
+            </div>
+        </div>
+
+        <!-- main grid: left (visual+log) + right (metrics) -->
+        <div class="grid lg:grid-cols-3 gap-6">
+
+            <!-- left column (2/3) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- main visual card (no tilt, only subtle glow and bar pulse) -->
+                <div class="glass-panel rounded-3xl p-8 border border-cyan/20 relative overflow-hidden grid-subtle">
+                    <!-- static minimal radar representation (no rotation) -->
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="relative w-40 h-40 flex items-center justify-center">
+                            <!-- outer ring (static) -->
+                            <div class="absolute inset-0 rounded-full border border-cyan/30"></div>
+                            <!-- middle ring with glow-soft (no rotation) -->
+                            <div class="absolute inset-2 rounded-full border border-cyan/20 glow-soft"></div>
+                            <!-- inner solid dot -->
+                            <div class="absolute w-4 h-4 bg-cyan rounded-full shadow-lg shadow-cyan/30"></div>
+                            <!-- static small dots (no animation) -->
+                            <div class="absolute w-1.5 h-1.5 bg-cyan/60 rounded-full top-2 left-1/2"></div>
+                            <div class="absolute w-1.5 h-1.5 bg-cyan/60 rounded-full bottom-2 left-1/3"></div>
+                        </div>
+
+                        <h2 class="text-xl font-medium mt-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-cyan">scan</span>
+                            Neural fingerprint extraction
+                        </h2>
+                        <p class="text-white/40 text-sm">Facial landmarks · GAN artifacts · frequency</p>
+
+                        <!-- progress bar with shimmer animation -->
+                        <div class="w-full mt-8 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-white/70">Deepfake probability assessment</span>
+                                <span class="text-cyan font-mono px-2 py-0.5 rounded" id="progressPercent">32%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div id="scanProgressFill" class="h-full shimmer" style="width:32%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-white/30">
+                                <span>Analyzing frames · <span id="frameCount">124</span>/387</span>
+                                <span id="eta">~4s remaining</span>
+                            </div>
+                        </div>
+
+                        <!-- neural activity bars (pulse height only) -->
+                        <div class="w-full mt-8 flex gap-1 items-end h-14">
+                            <div class="flex-1 bg-cyan/30 rounded-t bar-pulse" style="height:24px; animation-delay:0.0s"></div>
+                            <div class="flex-1 bg-cyan/40 rounded-t bar-pulse" style="height:36px; animation-delay:0.1s"></div>
+                            <div class="flex-1 bg-cyan/60 rounded-t bar-pulse" style="height:48px; animation-delay:0.2s"></div>
+                            <div class="flex-1 bg-cyan/80 rounded-t bar-pulse" style="height:64px; animation-delay:0.3s"></div>
+                            <div class="flex-1 bg-cyan/60 rounded-t bar-pulse" style="height:52px; animation-delay:0.4s"></div>
+                            <div class="flex-1 bg-cyan/40 rounded-t bar-pulse" style="height:34px; animation-delay:0.5s"></div>
+                            <div class="flex-1 bg-cyan/20 rounded-t bar-pulse" style="height:22px; animation-delay:0.6s"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- realtime log with scan line effect -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 scan-line">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-cyan text-lg">terminal</span>
+                        <span class="text-sm font-medium tracking-wide">neural log · realtime</span>
+                        <span class="ml-auto text-xs text-cyan/60 flex items-center gap-1">
+                            <span class="dot-live"></span> <span class="log-fade">recording</span>
+                        </span>
+                    </div>
+                    <div class="h-32 overflow-y-auto text-xs font-mono text-white/60 space-y-1 scroll-clean pr-2" id="logContainer">
+                        <p class="log-fade"><span class="text-cyan">[14:32:01]</span> media pipeline loaded</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:04]</span> extracting 387 frames</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:07]</span> face detection: 1 identity</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:10]</span> xceptionnet layer 12/48</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:14]</span> frequency artifacts: low</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:18]</span> temporal coherence 97.2%</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:22]</span> blending boundary scan</p>
+                        <p class="log-fade"><span class="text-cyan">[14:32:26]</span> aggregating scores</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- right column (1/3) : metrics -->
+            <div class="space-y-6">
+
+                <!-- authenticity gauge (static circle, but glow-soft) -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 flex flex-col items-center">
+                    <span class="text-xs text-white/40 uppercase tracking-wider">authenticity index</span>
+                    <div class="relative w-32 h-32 my-3">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <!-- background circle -->
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="#1f2f40" stroke-width="6" />
+                            <!-- progress circle (cyan) with transition -->
+                            <circle id="authCircle" cx="50" cy="50" r="42" fill="none" stroke="#2ae2ff" stroke-width="6" stroke-dasharray="264" stroke-dashoffset="132" stroke-linecap="round" transform="rotate(-90 50 50)" style="transition: stroke-dashoffset 0.4s; filter: drop-shadow(0 0 6px #2ae2ff);" />
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-3xl font-light text-cyan glow-soft" id="authPercent">78</span>
+                            <span class="text-[0.6rem] text-white/30">% real</span>
+                        </div>
+                    </div>
+                    <div class="w-full mt-2 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-white/60">Manipulation prob.</span>
+                            <span class="text-red-300" id="manipProb">22%</span>
+                        </div>
+                        <div class="w-full h-1 bg-white/10 rounded-full">
+                            <div class="h-full bg-red-300/70 rounded-full" id="manipBar" style="width:22%"></div>
+                        </div>
+                    </div>
+                    <!-- two small metrics (static, only hover effect) -->
+                    <div class="grid grid-cols-2 gap-3 w-full mt-6">
+                        <div class="bg-white/5 p-3 rounded-xl text-center border border-white/5 hover:border-cyan/30 transition-colors">
+                            <span class="material-symbols-outlined text-cyan text-xl">face</span>
+                            <p class="text-xs text-white/40">face</p>
+                            <p class="text-sm font-medium">98%</p>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-xl text-center border border-white/5 hover:border-cyan/30 transition-colors">
+                            <span class="material-symbols-outlined text-cyan text-xl">music_note</span>
+                            <p class="text-xs text-white/40">audio</p>
+                            <p class="text-sm font-medium">82%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- signal chips (static, only color) -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20">
+                    <h4 class="text-sm font-medium flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-cyan">insight</span> signal analysis</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 bg-cyan/5 border border-cyan/20 rounded-full text-xs text-cyan/90">temporal · high</span>
+                        <span class="px-3 py-1.5 bg-cyan/5 border border-cyan/20 rounded-full text-xs text-cyan/90">deepfake trace · low</span>
+                        <span class="px-3 py-1.5 bg-cyan/5 border border-cyan/20 rounded-full text-xs text-cyan/90">metadata · clean</span>
+                        <span class="px-3 py-1.5 bg-cyan/5 border border-cyan/20 rounded-full text-xs text-cyan/90">GAN fingerprint · none</span>
+                        <span class="px-3 py-1.5 bg-cyan/5 border border-cyan/20 rounded-full text-xs text-cyan/90">lip sync · 96%</span>
+                    </div>
+                </div>
+
+                <!-- report button (animated pulse only) -->
+                <div class="glass-card rounded-3xl p-6 border border-cyan/20 flex flex-col gap-3">
+                    <a href="report.html">
+                    <button id="viewReportBtn" disabled class="w-full bg-white/5 text-white/30 py-4 rounded-2xl text-lg font-light border border-white/10 cursor-not-allowed flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">hourglass_empty</span> scan in progress
+                    </button>
+                    </a>
+                    <p class="text-xs text-white/30 text-center">Full report upon completion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== SCANNING SIMULATION (professional, no tilting) ========== -->
+<script>
+    (function() {
+        // elements
+        const progressPercent = document.getElementById('progressPercent');
+        const scanProgressFill = document.getElementById('scanProgressFill');
+        const authPercentSpan = document.getElementById('authPercent');
+        const manipProbSpan = document.getElementById('manipProb');
+        const manipBar = document.getElementById('manipBar');
+        const authCircle = document.getElementById('authCircle');
+        const viewReportBtn = document.getElementById('viewReportBtn');
+        const logContainer = document.getElementById('logContainer');
+        const frameSpan = document.getElementById('frameCount');
+        const etaSpan = document.getElementById('eta');
+
+        // state
+        let progress = 32;
+        let authValue = 78;
+        let frames = 124;
+        const totalFrames = 387;
+
+        // disable button
+        viewReportBtn.disabled = true;
+        viewReportBtn.classList.add('opacity-60', 'cursor-not-allowed');
+
+        function addLog(message) {
+            if (!logContainer) return;
+            const p = document.createElement('p');
+            p.className = 'log-fade';
+            const d = new Date();
+            const time = `[${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}]`;
+            p.innerHTML = `<span class="text-cyan">${time}</span> ${message}`;
+            logContainer.appendChild(p);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateDisplay(prog, auth) {
+            const progInt = Math.floor(prog);
+            progressPercent.textContent = progInt + '%';
+            scanProgressFill.style.width = progInt + '%';
+
+            authPercentSpan.textContent = Math.floor(auth);
+            const manip = (100 - auth).toFixed(1);
+            manipProbSpan.textContent = manip + '%';
+            manipBar.style.width = manip + '%';
+
+            const circ = 2 * Math.PI * 42; // ≈264
+            const offset = circ * (1 - auth / 100);
+            authCircle.style.strokeDashoffset = offset;
+
+            // update frame count and eta dynamically
+            frames = Math.min(124 + Math.floor((prog-32)/68 * 263), totalFrames);
+            frameSpan.textContent = frames;
+            let etaSec = ((100 - prog) * 0.12).toFixed(1);
+            etaSpan.textContent = `~${etaSec}s remaining`;
+        }
+
+        updateDisplay(32, 78);
+
+        // simulation interval (no tilting, just data)
+        const interval = setInterval(() => {
+            if (progress >= 100) {
+                clearInterval(interval);
+                progress = 100;
+                authValue = 96;
+                updateDisplay(100, 96);
+                addLog('scan complete · authenticity 96%');
+                // enable report button with professional style
+                viewReportBtn.disabled = false;
+                viewReportBtn.classList.remove('opacity-60', 'cursor-not-allowed', 'bg-white/5', 'text-white/30', 'border-white/10');
+                viewReportBtn.classList.add('bg-cyan', 'text-black', 'border-cyan', 'transition-all', 'cursor-pointer');
+                viewReportBtn.innerHTML = `<span class="material-symbols-outlined">verified</span> view full report`;
+                return;
+            }
+
+            let step = (Math.random() * 2.2 + 1.0);
+            progress = Math.min(progress + step, 100);
+
+            if (progress < 50) authValue = 78 + (progress-32)*0.22;
+            else if (progress < 80) authValue = 82 + (progress-50)*0.3;
+            else authValue = 90 + (progress-80)*0.3;
+            authValue = Math.min(97, Math.max(75, authValue));
+
+            updateDisplay(progress, authValue);
+
+            if (Math.random() > 0.7) {
+                if (progress > 40 && progress < 60) addLog('frame #221 · blending ok');
+                else if (progress >= 65 && progress < 85) addLog('frequency domain · clean');
+                else if (progress >= 85) addLog('cross‑referencing DB');
+            }
+        }, 200);
+
+        window.addEventListener('load', () => {
+            addLog('neural scan initiated · model loaded');
+            addLog('analyzing video stream · 24 fps');
+        });
+
+        viewReportBtn.addEventListener('click', function() {
+            if (!viewReportBtn.disabled) {
+                alert('✅ Final report: 96% authentic — no deepfake manipulation detected.');
+            }
+        });
+    })();
+</script>
+
+<!-- footer -->
+<footer class="text-center text-white/20 text-xs py-6 border-t border-white/5 mt-10">
+    DeepVerify · neural deepfake detection · research prototype
+</footer>
+</body>
+</html>
