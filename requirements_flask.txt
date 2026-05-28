@@ -1,0 +1,8 @@
+flask
+torch
+torchvision
+timm
+opencv-python
+PyWavelets
+numpy
+Pillow

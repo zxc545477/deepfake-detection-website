@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 偽造影像檢測平台</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:"Microsoft JhengHei",sans-serif;
+    }
+
+    body{
+      background:#0b1120;
+      color:white;
+      line-height:1.6;
+    }
+
+    .container{
+      width:90%;
+      max-width:1300px;
+      margin:auto;
+    }
+
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:25px 0;
+    }
+
+    .logo{
+      font-size:28px;
+      font-weight:bold;
+      background:linear-gradient(90deg,#7c3aed,#3b82f6);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .nav-links{
+      display:flex;
+      gap:30px;
+    }
+
+    .nav-links a{
+      color:#cbd5e1;
+      text-decoration:none;
+      transition:.3s;
+    }
+
+    .nav-links a:hover{
+      color:white;
+    }
+
+    .hero{
+      text-align:center;
+      padding:70px 0;
+    }
+
+    .hero h1{
+      font-size:64px;
+      margin-bottom:20px;
+      background:linear-gradient(90deg,#8b5cf6,#3b82f6);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .hero p{
+      max-width:850px;
+      margin:auto;
+      color:#94a3b8;
+      font-size:20px;
+    }
+
+    .upload-wrapper{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:30px;
+      margin-top:50px;
+    }
+
+    .upload-card{
+      background:#111827;
+      border:2px solid #1e293b;
+      border-radius:30px;
+      padding:30px;
+      transition:.3s;
+      box-shadow:0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .upload-card:hover{
+      transform:translateY(-5px);
+      border-color:#6366f1;
+    }
+
+    .upload-card h2{
+      margin-bottom:20px;
+      font-size:30px;
+    }
+
+    .upload-box{
+      border:2px dashed #6366f1;
+      border-radius:20px;
+      padding:50px 20px;
+      text-align:center;
+      cursor:pointer;
+      transition:.3s;
+      background:#0f172a;
+      display:block;
+    }
+
+    .upload-box:hover{
+      border-color:#8b5cf6;
+      background:#131c31;
+    }
+
+    .upload-box p{
+      color:#94a3b8;
+      margin-top:10px;
+    }
+
+    input[type="file"]{
+      display:none;
+    }
+
+    .preview{
+      margin-top:20px;
+    }
+
+    .preview img,
+    .preview video{
+      width:100%;
+      border-radius:20px;
+      margin-top:15px;
+      border:1px solid #1e293b;
+    }
+
+    .detect-btn{
+      width:100%;
+      margin-top:20px;
+      padding:16px;
+      border:none;
+      border-radius:15px;
+      background:linear-gradient(90deg,#6366f1,#8b5cf6);
+      color:white;
+      font-size:18px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    .detect-btn:hover{
+      transform:scale(1.03);
+    }
+
+    .loading{
+      display:none;
+      margin-top:20px;
+      background:#0f172a;
+      border-radius:20px;
+      padding:20px;
+      animation:pulse 1.5s infinite;
+    }
+
+    @keyframes pulse{
+      0%{opacity:0.7;}
+      50%{opacity:1;}
+      100%{opacity:0.7;}
+    }
+
+    .loading p{
+      margin:8px 0;
+      color:#cbd5e1;
+    }
+
+    .result{
+      display:none;
+      margin-top:20px;
+      padding:20px;
+      border-radius:20px;
+      border:2px solid #ef4444;
+      background:rgba(239,68,68,0.1);
+    }
+
+    .safe{
+      border:2px solid #22c55e;
+      background:rgba(34,197,94,0.1);
+    }
+
+    .result-title{
+      font-size:42px;
+      font-weight:900;
+      text-align:center;
+      margin-bottom:10px;
+    }
+
+    .fake-text{
+      color:#ef4444;
+    }
+
+    .real-text{
+      color:#22c55e;
+    }
+
+    .prob-row{
+      margin-top:15px;
+      background:#0f172a;
+      padding:14px;
+      border-radius:14px;
+      color:#cbd5e1;
+    }
+
+    .bar{
+      height:12px;
+      background:#1e293b;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:8px;
+    }
+
+    .bar-fill-fake{
+      height:100%;
+      background:#ef4444;
+      width:0%;
+      transition:.5s;
+    }
+
+    .bar-fill-real{
+      height:100%;
+      background:#22c55e;
+      width:0%;
+      transition:.5s;
+    }
+
+    .prnu-box{
+      display:none;
+      margin-top:20px;
+      background:#0f172a;
+      padding:18px;
+      border-radius:20px;
+      border:1px solid #1e293b;
+    }
+
+    .prnu-box h3{
+      margin-bottom:10px;
+      color:#cbd5e1;
+    }
+
+    .prnu-box img{
+      width:100%;
+      border-radius:16px;
+      border:1px solid #334155;
+    }
+
+    .section-title{
+      text-align:center;
+      margin-top:100px;
+      margin-bottom:50px;
+      font-size:42px;
+    }
+
+    .features{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:25px;
+    }
+
+    .feature-card{
+      background:#111827;
+      padding:30px;
+      border-radius:25px;
+      border:1px solid #1e293b;
+      transition:.3s;
+    }
+
+    .feature-card:hover{
+      transform:translateY(-5px);
+      border-color:#6366f1;
+    }
+
+    .feature-card h3{
+      margin-bottom:15px;
+      font-size:24px;
+    }
+
+    .feature-card p{
+      color:#94a3b8;
+    }
+
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:25px;
+      margin-top:20px;
+    }
+
+    .step-card{
+      background:#111827;
+      padding:30px;
+      border-radius:25px;
+      text-align:center;
+      border:1px solid #1e293b;
+    }
+
+    .step-card p{
+      color:#94a3b8;
+    }
+
+    .step-number{
+      width:60px;
+      height:60px;
+      border-radius:50%;
+      background:linear-gradient(90deg,#6366f1,#8b5cf6);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin:auto;
+      margin-bottom:20px;
+      font-size:24px;
+      font-weight:bold;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+      background:#111827;
+      border-radius:20px;
+      overflow:hidden;
+    }
+
+    th,td{
+      padding:20px;
+      text-align:left;
+    }
+
+    th{
+      background:#1e293b;
+    }
+
+    tr{
+      border-bottom:1px solid #1e293b;
+    }
+
+    td{
+      color:#cbd5e1;
+    }
+
+    footer{
+      margin-top:100px;
+      text-align:center;
+      padding:40px 0;
+      color:#64748b;
+      border-top:1px solid #1e293b;
+    }
+
+    @media(max-width:900px){
+      .upload-wrapper,
+      .features,
+      .steps{
+        grid-template-columns:1fr;
+      }
+
+      .hero h1{
+        font-size:42px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <nav>
+      <div class="logo">DeepVision AI</div>
+      <div class="nav-links">
+        <a href="#">首頁</a>
+        <a href="#features">功能介紹</a>
+        <a href="#detect">檢測服務</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>AI 偽造影像檢測平台</h1>
+      <p>
+        利用 Xception 視覺特徵與 PRNU 相機殘差分析，
+        快速檢測照片是否存在 AI 合成、深度偽造或異常影像痕跡。
+      </p>
+    </section>
+
+    <section class="upload-wrapper" id="detect">
+
+      <!-- Image -->
+      <div class="upload-card">
+        <h2>📷 照片檢測</h2>
+
+        <label class="upload-box">
+          <input type="file" accept="image/*" id="imageInput">
+          <h3>上傳照片</h3>
+          <p>支援 JPG、PNG、WEBP</p>
+        </label>
+
+        <div class="preview" id="imagePreview"></div>
+
+        <button class="detect-btn" onclick="detectImage()">
+          開始照片檢測
+        </button>
+
+        <div class="loading" id="imageLoading">
+          <p>正在擷取 Xception 視覺特徵...</p>
+          <p>正在計算 PRNU 相機殘差...</p>
+          <p>正在進行 Fake / Real 分類...</p>
+        </div>
+
+        <div class="result" id="imageResult"></div>
+
+        <div class="prnu-box" id="prnuBox">
+          <h3>🧬 PRNU 高頻殘差圖</h3>
+          <img id="prnuImage" src="" alt="PRNU 圖">
+          <p style="color:#94a3b8;margin-top:10px;">
+            PRNU 圖可輔助觀察影像高頻殘差與相機噪聲特徵。
+          </p>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <div class="upload-card">
+        <h2>🎥 影片檢測</h2>
+
+        <label class="upload-box">
+          <input type="file" accept="video/*" id="videoInput">
+          <h3>上傳影片</h3>
+          <p>支援 MP4、MOV</p>
+        </label>
+
+        <div class="preview" id="videoPreview"></div>
+
+        <button class="detect-btn" onclick="detectVideo()">
+          開始影片檢測
+        </button>
+
+        <div class="loading" id="videoLoading">
+          <p>正在分析影片內容...</p>
+          <p>影片偵測功能目前保留為未來擴充...</p>
+        </div>
+
+        <div class="result" id="videoResult"></div>
+      </div>
+
+    </section>
+
+    <h2 class="section-title" id="features">系統特色</h2>
+
+    <section class="features">
+      <div class="feature-card">
+        <h3>🔍 Xception 視覺分析</h3>
+        <p>使用 Xception CNN 擷取臉部紋理、邊緣與影像語意特徵。</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>🧬 PRNU 相機殘差</h3>
+        <p>分析影像高頻殘差與相機指紋，用於輔助辨識 AI 合成痕跡。</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>🎥 影片功能保留</h3>
+        <p>目前支援照片偵測，影片區塊保留作為後續抽幀偵測功能擴充。</p>
+      </div>
+    </section>
+
+    <h2 class="section-title">使用方式</h2>
+
+    <section class="steps">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>上傳檔案</h3>
+        <p>選擇欲分析的照片或影片。</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>開始分析</h3>
+        <p>照片會由 Xception + PRNU 雙流模型進行檢測。</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>查看結果</h3>
+        <p>顯示 Fake / Real、信心值、分類機率與 PRNU 圖。</p>
+      </div>
+    </section>
+
+    <h2 class="section-title">分析項目</h2>
+
+    <table>
+      <tr>
+        <th>分析項目</th>
+        <th>說明</th>
+      </tr>
+
+      <tr>
+        <td>Xception 視覺特徵</td>
+        <td>分析臉部紋理、五官邊緣與影像合成痕跡。</td>
+      </tr>
+
+      <tr>
+        <td>PRNU 高頻殘差</td>
+        <td>擷取影像中的相機感光元件殘差與不自然高頻訊號。</td>
+      </tr>
+
+      <tr>
+        <td>雙流特徵融合</td>
+        <td>將 RGB 視覺特徵與 PRNU 特徵融合後進行 Fake / Real 分類。</td>
+      </tr>
+
+      <tr>
+        <td>影片偵測</td>
+        <td>目前保留前端上傳與預覽，後續可加入抽幀偵測。</td>
+      </tr>
+    </table>
+
+    <footer>
+      本系統僅提供 AI 輔助分析結果，無法保證 100% 準確性。
+    </footer>
+
+  </div>
+
+  <script>
+    document.getElementById("imageInput").addEventListener("change",function(e){
+      const file = e.target.files[0];
+      if(!file) return;
+
+      const url = URL.createObjectURL(file);
+      document.getElementById("imagePreview").innerHTML = `<img src="${url}">`;
+      document.getElementById("imageResult").style.display = "none";
+      document.getElementById("prnuBox").style.display = "none";
+    });
+
+    document.getElementById("videoInput").addEventListener("change",function(e){
+      const file = e.target.files[0];
+      if(!file) return;
+
+      const url = URL.createObjectURL(file);
+      document.getElementById("videoPreview").innerHTML =
+        `<video src="${url}" controls></video>`;
+    });
+
+    async function detectImage(){
+      const input = document.getElementById("imageInput");
+      const loading = document.getElementById("imageLoading");
+      const result = document.getElementById("imageResult");
+      const prnuBox = document.getElementById("prnuBox");
+      const prnuImage = document.getElementById("prnuImage");
+
+      if(!input.files[0]){
+        alert("請先上傳照片");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", input.files[0]);
+
+      loading.style.display = "block";
+      result.style.display = "none";
+      prnuBox.style.display = "none";
+
+      try{
+        const response = await fetch("/predict-image", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        loading.style.display = "none";
+
+        if(data.error){
+          result.className = "result";
+          result.innerHTML = `<h2>❌ 發生錯誤</h2><p>${data.error}</p>`;
+          result.style.display = "block";
+          return;
+        }
+
+        const isFake = data.label === "fake";
+        result.className = isFake ? "result" : "result safe";
+        const labelClass = isFake ? "fake-text" : "real-text";
+        const labelText = isFake ? "FAKE" : "REAL";
+
+        result.innerHTML = `
+          <div class="result-title ${labelClass}">${labelText}</div>
+          <p style="text-align:center;font-size:20px;">信心值：${data.confidence}%</p>
+
+          <div class="prob-row">
+            <strong>Fake 機率：${data.fake_prob}%</strong>
+            <div class="bar"><div class="bar-fill-fake" style="width:${data.fake_prob}%"></div></div>
+          </div>
+
+          <div class="prob-row">
+            <strong>Real 機率：${data.real_prob}%</strong>
+            <div class="bar"><div class="bar-fill-real" style="width:${data.real_prob}%"></div></div>
+          </div>
+        `;
+
+        result.style.display = "block";
+
+        if(data.prnu_url){
+          prnuImage.src = data.prnu_url;
+          prnuBox.style.display = "block";
+        }
+
+      }catch(error){
+        loading.style.display = "none";
+        result.className = "result";
+        result.innerHTML = `<h2>❌ 連線錯誤</h2><p>${error}</p>`;
+        result.style.display = "block";
+      }
+    }
+
+    function detectVideo(){
+      const loading = document.getElementById("videoLoading");
+      const result = document.getElementById("videoResult");
+
+      loading.style.display = "block";
+      result.style.display = "none";
+
+      setTimeout(()=>{
+        loading.style.display = "none";
+        result.className = "result";
+        result.style.display = "block";
+        result.innerHTML = `
+          <h2>🎥 影片偵測尚未開放</h2>
+          <p>
+            目前後端模型為照片偵測版本。影片功能可於後續加入「抽幀偵測」：
+            將影片切成多張影格，再逐張送入 Xception + PRNU 模型分析。
+          </p>
+        `;
+      },1200);
+    }
+  </script>
+</body>
+</html>
